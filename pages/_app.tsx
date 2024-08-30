@@ -4,7 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 
 // Dynamically import the Layout component with SSR disabled
-const Layout = dynamic(() => import("@/components/layouts/default"), {
+const DefaultLayout = dynamic(() => import("@/components/layouts/default"), {
   ssr: false,
 });
 
@@ -14,9 +14,9 @@ function Application({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <Layout>
+      <DefaultLayout>
         <Component {...pageProps} />
-      </Layout>
+      </DefaultLayout>
     </SessionProvider>
   );
 }
