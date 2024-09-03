@@ -5,6 +5,7 @@ declare module "next-auth" {
     user: {
       provider: "google" | "none";
       accessToken?: string;
+      refreshToken?: string;
     } & DefaultSession["user"];
   }
 }

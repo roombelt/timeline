@@ -8,12 +8,17 @@ const OAuth2 = google.auth.OAuth2;
 export default class GoogleProvider implements CalendarProvider {
   calendarClient: calendar_v3.Calendar;
 
-  constructor(accessToken: string) {
+  constructor(accessToken: string, refreshToken: string) {
     const auth = new OAuth2(
       process.env.GOOGLE_CLIENT_ID!,
       process.env.GOOGLE_CLIENT_SECRET!
     );
-    auth.setCredentials({ access_token: accessToken });
+
+    auth.setCredentials({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
     this.calendarClient = google.calendar({
       version: "v3",
       auth,

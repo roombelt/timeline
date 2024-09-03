@@ -34,6 +34,7 @@ function createExportState() {
       const calendar = userCalendars
         .get()
         .data?.find((calendar) => (calendar.id = e.calendarId));
+
       for (const column of columns) {
         row[column] = availableColumns[column](e, calendar!);
       }

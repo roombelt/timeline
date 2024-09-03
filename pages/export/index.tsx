@@ -1,4 +1,12 @@
-import { Form, Select, DatePicker, Button, notification } from "antd";
+import {
+  Form,
+  Select,
+  DatePicker,
+  Button,
+  notification,
+  Alert,
+  Card,
+} from "antd";
 
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -6,10 +14,40 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import { useSelector } from "active-store";
 import exportState, { availableColumns } from "./state";
 import { useLocalStorage } from "react-use";
+import { signIn, useSession } from "next-auth/react";
+import React from "react";
 
 dayjs.extend(localizedFormat);
 
 const { RangePicker } = DatePicker;
+
+function Tool(props: {
+  description: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const session = useSession();
+
+  return (
+    <>
+      {props.description}
+      <div style={{ marginTop: 20 }} />
+      {session.status === "authenticated" && props.children}
+      {session.status === "unauthenticated" && (
+        <Alert
+          type="warning"
+          message={
+            <>
+              <p>You need to be signed in to use this tool.</p>
+              <Button type="primary" onClick={() => signIn("google")}>
+                Sign in
+              </Button>
+            </>
+          }
+        />
+      )}
+    </>
+  );
+}
 
 export default function Export() {
   const userCalendars = useSelector(exportState.getCalendars);
@@ -47,7 +85,7 @@ export default function Export() {
   }
 
   return (
-    <>
+    <Tool description="Use this tool to export events from your calendar system to an Excel spreadsheet.">
       <Form labelCol={{ span: 4 }} wrapperCol={{ span: 14 }}>
         <Form.Item label="Calendars">
           <Select
@@ -107,6 +145,6 @@ export default function Export() {
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </Tool>
   );
 }

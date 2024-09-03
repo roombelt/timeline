@@ -8,8 +8,10 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
+          prompt: "consent",
           scope:
-            "https://www.googleapis.com/auth/calendar openid email profile",
+            "https://www.googleapis.com/auth/calendar openid email profile ",
+          access_type: "offline",
         },
       },
     }),
@@ -18,12 +20,12 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
         token.provider = account.provider;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.accessToken = token.accessToken as string;
       session.user.provider = (token.provider as any) || "none";
       return session;
     },

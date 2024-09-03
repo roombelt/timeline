@@ -1,5 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, Card, theme } from "antd";
 import Head from "next/head";
 import React from "react";
 import {
@@ -11,7 +11,6 @@ import {
 import logo from "./logo.png";
 import AccountMenu from "./account-menu";
 
-import type { MenuProps } from "antd";
 import { useRouter } from "next/router";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -49,9 +48,8 @@ export default function DefaultLayout({
         <AccountMenu />
       </FixedSider>
       <PageWrapper>
-        <PageHeader>{page?.label ?? "Roombelt calendar utils"}</PageHeader>
         <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-          {children}
+          <Card title={page?.label ?? "Roombelt Utils"}>{children}</Card>
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Roombelt Utils©{new Date().getFullYear()} Created by Mateusz Zieliński
@@ -106,18 +104,16 @@ const FixedSider = styled(Sider)`
   bottom: 0;
   scrollbar-width: thin;
   scrollbar-color: unset;
-`;
 
-const PageHeader = styled(Header)`
-  padding: 20px;
-  font-size: 20px;
-  background: white;
-  line-height: normal;
+  .ant-layout-sider-children {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+  }
 `;
 
 const PageWrapper = styled(Layout)`
   margin-left: 200px;
   display: grid;
   min-height: 100%;
-  grid-template-rows: auto minmax(max-content, 1fr) auto;
+  grid-template-rows: minmax(max-content, 1fr) auto;
 `;
