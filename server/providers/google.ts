@@ -35,20 +35,32 @@ export default class GoogleProvider implements CalendarProvider {
   }
 
   async getEvents(calendarId: string, timeMin: number, timeMax: number) {
-    const result = await this.calendarClient.events.list({
-      calendarId,
-      timeMin: new Date(timeMin).toISOString(),
-      timeMax: new Date(timeMax).toISOString(),
-      singleEvents: true,
-      orderBy: "startTime",
-    });
+    const getPage = (pageToken?: string) =>
+      this.calendarClient.events.list({
+        calendarId,
+        pageToken,
+        timeMin: new Date(timeMin).toISOString(),
+        timeMax: new Date(timeMax).toISOString(),
+        singleEvents: true,
+        orderBy: "startTime",
+      });
 
-    if (result.status !== 200) {
-      throw new Error("Error while getting list of events");
-    }
+    const items = [];
 
-    if (!result.data.items?.length) {
-      return [];
+    for (let result = await getPage(undefined); ; ) {
+      if (result.status !== 200) {
+        throw new Error("Error while getting list of events");
+      }
+
+      if (result.data.items?.length) {
+        items.push(...result.data.items);
+      }
+
+      if (!result.data.nextPageToken) {
+        break;
+      }
+
+      result = await getPage(result.data.nextPageToken);
     }
 
     const mapToDate = (time: string) => ({
@@ -57,21 +69,25 @@ export default class GoogleProvider implements CalendarProvider {
       day: getDate(time),
     });
 
-    return result.data.items.map((event) => ({
+    return items.map((event) => ({
+      calendarId,
       id: event.id!,
-      summary: event.summary!,
-      time:
-        event.start?.date && event.end?.date
-          ? {
-              isAllDay: true as const,
-              startDate: mapToDate(event.start.date),
-              endDate: mapToDate(event.end.date),
-            }
-          : {
-              isAllDay: false as const,
-              startTimestamp: getTime(event.start?.dateTime!),
-              endTimestamp: getTime(event.end?.dateTime!),
-            },
+      summary: event.summary ?? "(No meeting summary)",
+      description: event.description ?? "",
+      organizer:
+        event.organizer?.displayName ?? event.organizer?.email ?? "Unknown",
+      participants:
+        (event.attendees
+          ?.map((attendee) => attendee?.displayName ?? attendee?.email)
+          .filter(Boolean) as string[]) ?? [],
+
+      isAllDay: !!event.start?.date && !!event.end?.date,
+      start: event.start?.date
+        ? mapToDate(event.start.date)
+        : getTime(event.start?.dateTime!),
+      end: event.end?.date
+        ? mapToDate(event.end.date)
+        : getTime(event.end?.dateTime!),
     }));
   }
 }

@@ -4,7 +4,7 @@ export interface CalendarProvider {
     calendarId: string,
     timeMin: number,
     timeMax: number
-  ) => Promise<Event[]>;
+  ) => Promise<CalendarEvent[]>;
 }
 
 export interface Calendar {
@@ -12,18 +12,14 @@ export interface Calendar {
   name: string;
 }
 
-export interface Event {
+export interface CalendarEvent {
+  calendarId: string;
   id: string;
   summary: string;
-  time:
-    | {
-        isAllDay: true;
-        startDate: { year: number; month: number; day: number };
-        endDate: { year: number; month: number; day: number };
-      }
-    | {
-        isAllDay: false;
-        startTimestamp: number;
-        endTimestamp: number;
-      };
+  organizer: string;
+  participants: string[];
+  description: string;
+  start: number | { year: number; month: number; day: number };
+  end: number | { year: number; month: number; day: number };
+  isAllDay: boolean;
 }
