@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { Select, DatePicker, Button } from "antd";
+import { Form, Select, DatePicker, Button, notification } from "antd";
+
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 import { useSelector } from "active-store";
 import exportState, { availableColumns } from "./state";
 import { useLocalStorage } from "react-use";
 
-const { RangePicker } = DatePicker;
+dayjs.extend(localizedFormat);
 
-type RangePickerValue = Parameters<typeof RangePicker>[0]["value"];
+const { RangePicker } = DatePicker;
 
 export default function Export() {
   const userCalendars = useSelector(exportState.getCalendars);
@@ -24,74 +26,87 @@ export default function Export() {
     "End time",
   ]);
 
-  const [dates, setDates] = useState<RangePickerValue>([null, null]);
+  const [startTimestamp, setStartTimestamp] = useLocalStorage(
+    "export-start-time",
+    dayjs().startOf("month").valueOf()
+  );
 
-  const startTime = dates?.[0];
-  const endTime = dates?.[1];
+  const [endTimestamp, setEndTimestamp] = useLocalStorage(
+    "export-end-time",
+    dayjs().endOf("month").valueOf()
+  );
 
-  function exportData() {
-    exportState.exportAsExcel(
+  async function exportData() {
+    await exportState.exportAsExcel(
       calendars ?? [],
-      startTime!.valueOf(),
-      endTime!.valueOf(),
+      dayjs(startTimestamp).valueOf(),
+      dayjs(endTimestamp).valueOf(),
       columns ?? []
     );
+    notification.success({ message: "Successfully exported events." });
   }
 
   return (
     <>
-      <main>
-        <div>Select calendars to export:</div>
-        <Select
-          mode="multiple"
-          allowClear
-          style={{ width: "100%" }}
-          placeholder="Please select"
-          value={calendars}
-          onChange={setCalendars}
-          options={userCalendars.data?.map((item) => ({
-            value: item.id,
-            label: item.name,
-          }))}
-          optionFilterProp="label"
-        />
+      <Form labelCol={{ span: 4 }} wrapperCol={{ span: 14 }}>
+        <Form.Item label="Calendars">
+          <Select
+            mode="multiple"
+            allowClear
+            placeholder="Please select"
+            value={calendars}
+            onChange={setCalendars}
+            options={userCalendars.data?.map((item) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            optionFilterProp="label"
+          />
+        </Form.Item>
 
-        <div>Select time range</div>
-        <RangePicker value={dates} onChange={setDates} />
+        <Form.Item label="Columns">
+          <Select
+            mode="multiple"
+            allowClear
+            style={{ width: "100%" }}
+            placeholder="Please select"
+            value={columns}
+            onChange={setColumns}
+            options={Object.keys(availableColumns).map((item) => ({
+              value: item,
+              label: item,
+            }))}
+            optionFilterProp="label"
+          />
+        </Form.Item>
 
-        <div>Select columns to export:</div>
-        <Select
-          mode="multiple"
-          allowClear
-          style={{ width: "100%" }}
-          placeholder="Please select"
-          value={columns}
-          onChange={setColumns}
-          options={Object.keys(availableColumns).map((item) => ({
-            value: item,
-            label: item,
-          }))}
-          optionFilterProp="label"
-        />
+        <Form.Item label="Time range">
+          <RangePicker
+            value={[dayjs(startTimestamp), dayjs(endTimestamp)]}
+            onChange={(range) => {
+              if (range?.[0]) setStartTimestamp(range[0].valueOf());
+              if (range?.[1]) setEndTimestamp(range[1].valueOf());
+            }}
+          />
+        </Form.Item>
 
-        <Button
-          disabled={
-            !startTime ||
-            !endTime ||
-            !calendars?.length ||
-            !columns?.length ||
-            exportStatus === "loading"
-          }
-          type="primary"
-          onClick={exportData}
-        >
-          Export
-        </Button>
-
-        {exportStatus === "loading" && <div>Loading data...</div>}
-        {exportStatus === "error" && <div>Error while loading data</div>}
-        {exportStatus === "success" && <div>Successfully fetched events</div>}
-      </main>
+        <Form.Item wrapperCol={{ offset: 4, span: 14 }}>
+          <Button
+            disabled={
+              !startTimestamp ||
+              !endTimestamp ||
+              !calendars?.length ||
+              !columns?.length ||
+              exportStatus === "loading"
+            }
+            loading={exportStatus === "loading"}
+            type="primary"
+            onClick={exportData}
+          >
+            Export
+          </Button>
+        </Form.Item>
+      </Form>
     </>
   );
 }

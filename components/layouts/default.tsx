@@ -54,7 +54,7 @@ export default function DefaultLayout({
           {children}
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          Roombelt Utils©{new Date().getFullYear()} Created by Mateusz Zieliński
         </Footer>
       </PageWrapper>
     </Layout>
@@ -69,7 +69,7 @@ const items: { key: string; label: string; icon: React.ReactNode }[] = [
   },
   {
     key: "/export",
-    label: "Export events",
+    label: "Export to Excel",
     icon: <ExportOutlined />,
   },
   {

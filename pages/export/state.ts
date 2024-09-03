@@ -1,5 +1,5 @@
 import { trpc } from "@/utils/trpc";
-import { format, parse } from "date-fns";
+import dayjs from "dayjs";
 import { createQuery, createState } from "active-store";
 import * as XLSX from "xlsx";
 import type { Calendar, CalendarEvent } from "@/server/providers/types";
@@ -34,7 +34,6 @@ function createExportState() {
       const calendar = userCalendars
         .get()
         .data?.find((calendar) => (calendar.id = e.calendarId));
-
       for (const column of columns) {
         row[column] = availableColumns[column](e, calendar!);
       }
@@ -68,6 +67,7 @@ export const availableColumns: Record<
   "Start time": (event) => formatTime(event.start),
   "End time": (event) => formatTime(event.end),
   "Participants #": (event) => event.participants.length,
+  "Participants List": (event) => event.participants.join(", "),
   Calendar: (event, calendar) => calendar.name,
 };
 
@@ -75,14 +75,11 @@ function formatTime(
   time: number | { year: number; day: number; month: number }
 ) {
   if (typeof time === "number") {
-    return format(time, "PP p");
+    return dayjs(time).format("LL LT");
   } else {
-    const date = parse(
-      `${time.year}-${time.day}-${time.month}`,
-      "yy-dd-MM",
-      new Date()
+    return dayjs(`${time.year}-${time.day}-${time.month}`, "YYYY-dd-MM").format(
+      "LL"
     );
-    return format(date, "PP");
   }
 }
 

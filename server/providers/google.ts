@@ -1,6 +1,7 @@
 import { google, calendar_v3 } from "googleapis";
 import { CalendarProvider } from "./types";
-import { getDate, getMonth, getTime, getYear } from "date-fns";
+import dayjs from "dayjs";
+// import { getDate, getMonth, getTime, getYear } from "date-fns";
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -64,9 +65,9 @@ export default class GoogleProvider implements CalendarProvider {
     }
 
     const mapToDate = (time: string) => ({
-      year: getYear(time),
-      month: getMonth(time),
-      day: getDate(time),
+      year: dayjs(time).year(),
+      month: dayjs(time).month(),
+      day: dayjs(time).date(),
     });
 
     return items.map((event) => ({
@@ -84,10 +85,10 @@ export default class GoogleProvider implements CalendarProvider {
       isAllDay: !!event.start?.date && !!event.end?.date,
       start: event.start?.date
         ? mapToDate(event.start.date)
-        : getTime(event.start?.dateTime!),
+        : dayjs(event.start?.dateTime!).valueOf(),
       end: event.end?.date
         ? mapToDate(event.end.date)
-        : getTime(event.end?.dateTime!),
+        : dayjs(event.end?.dateTime!).valueOf(),
     }));
   }
 }
