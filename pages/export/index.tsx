@@ -1,9 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { useState } from "react";
-import { Select, DatePicker, Button, Space } from "antd";
+import { Select, DatePicker, Button } from "antd";
 
-import type { Calendar } from "@/server/providers/types";
-import type { SelectProps } from "antd";
+import type { Event } from "@/server/providers/types";
+import { format, parse } from "date-fns";
 
 const { RangePicker } = DatePicker;
 
@@ -11,12 +11,27 @@ type RangePickerValue = Parameters<typeof RangePicker>[0]["value"];
 
 export default function Export() {
   const userCalendars = trpc.calendars.useQuery();
+  const utils = trpc.useUtils();
+  const [events, setEvents] = useState<Event[]>([]);
 
   const [calendars, setCalendars] = useState([]);
   const [dates, setDates] = useState<RangePickerValue>([null, null]);
 
-  function exportData() {
-    console.log("Exporting", calendars, dates);
+  async function exportData() {
+    const start = dates?.[0];
+    const end = dates?.[1];
+
+    if (!start || !end) {
+      return;
+    }
+
+    const result = await utils.events.fetch({
+      calendarId: calendars[0],
+      startTimestamp: start.valueOf(),
+      endTimestamp: end.valueOf(),
+    });
+
+    setEvents(result);
   }
   return (
     <>
@@ -41,63 +56,49 @@ export default function Export() {
         <Button type="primary" onClick={exportData}>
           Export
         </Button>
+
+        <div>
+          {events.map((event) => (
+            <CalendarEvent key={event.id} event={event} />
+          ))}
+        </div>
       </main>
     </>
   );
 }
 
-function CalendarItem({ calendar }: { calendar: Calendar }) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <li key={calendar.id}>
-      {calendar.name}{" "}
-      <Button onClick={() => setExpanded(!expanded)}>
-        {expanded ? "-" : "+"}
-      </Button>
-      {expanded && <CalendarEvents id={calendar.id} />}
-    </li>
-  );
-}
-
-function CalendarEvents({ id }: { id: string }) {
-  const events = useEvents(id);
-  if (events.isLoading || events.isReloading) {
-    return <div>Loading...</div>;
-  }
-
+function CalendarEvent({ event }: { event: Event }) {
   return (
     <div>
-      {events.data?.length === 0 && (
+      {event.time.isAllDay ? (
         <>
-          <div>No events planned</div>
-          <button onClick={events.reload}>Refresh</button>
+          <EventTime time={event.time.startDate} /> -{" "}
+          <EventTime time={event.time.startDate} />
+        </>
+      ) : (
+        <>
+          <EventTime time={event.time.startTimestamp} /> -{" "}
+          <EventTime time={event.time.endTimestamp} />
         </>
       )}
-      {events.data?.map((event) => (
-        <div key={event.id}>{event.summary}</div>
-      ))}
+      <span> {event.summary}</span>
     </div>
   );
 }
 
-function useEvents(calendarId: string) {
-  const events = trpc.events.useQuery(calendarId);
-
-  const [isReloading, setReloading] = useState(false);
-  function reload() {
-    setReloading(true);
-    events.refetch().finally(() => setReloading(false));
+export function EventTime({
+  time,
+}: {
+  time: number | { day: number; month: number; year: number };
+}) {
+  if (typeof time === "number") {
+    return <span>{format(time, "yyyy-MM-dd HH:mm")}</span>;
+  } else {
+    const date = parse(
+      `${time.year}-${time.day}-${time.month}`,
+      "yy-dd-MM",
+      new Date()
+    );
+    return <span>{format(date, "yyyy-MM-dd ")}</span>;
   }
-
-  return { ...events, isReloading, reload };
-}
-
-const options: SelectProps["options"] = [];
-
-for (let i = 10; i < 36; i++) {
-  options.push({
-    label: i.toString(36) + i,
-    value: i.toString(36) + i,
-  });
 }

@@ -7,12 +7,18 @@ export const appRouter = router({
 
   calendars: procedure.query((opts) => opts.ctx.calendar.getCalendars()),
   events: procedure
-    .input(z.string())
+    .input(
+      z.object({
+        calendarId: z.string(),
+        startTimestamp: z.number(),
+        endTimestamp: z.number(),
+      })
+    )
     .query((opts) =>
       opts.ctx.calendar.getEvents(
-        opts.input,
-        Date.now() - ms("1day"),
-        Date.now() + ms("1 day")
+        opts.input.calendarId,
+        opts.input.startTimestamp,
+        opts.input.endTimestamp
       )
     ),
 });
