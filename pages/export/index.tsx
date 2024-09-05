@@ -1,57 +1,17 @@
-import {
-  Form,
-  Select,
-  DatePicker,
-  Button,
-  notification,
-  Alert,
-  Card,
-} from "antd";
-
+import React from "react";
+import { Form, Select, DatePicker, Button, notification } from "antd";
 import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 
-import { useSelector } from "active-store";
+import { useActive } from "active-store";
 import exportState, { availableColumns } from "./state";
 import { useLocalStorage } from "react-use";
-import { signIn, useSession } from "next-auth/react";
-import React from "react";
-
-dayjs.extend(localizedFormat);
+import Tool from "@/components/tool";
 
 const { RangePicker } = DatePicker;
 
-function Tool(props: {
-  description: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  const session = useSession();
-
-  return (
-    <>
-      {props.description}
-      <div style={{ marginTop: 20 }} />
-      {session.status === "authenticated" && props.children}
-      {session.status === "unauthenticated" && (
-        <Alert
-          type="warning"
-          message={
-            <>
-              <p>You need to be signed in to use this tool.</p>
-              <Button type="primary" onClick={() => signIn("google")}>
-                Sign in
-              </Button>
-            </>
-          }
-        />
-      )}
-    </>
-  );
-}
-
 export default function Export() {
-  const userCalendars = useSelector(exportState.getCalendars);
-  const exportStatus = useSelector(exportState.getExportStatus);
+  const userCalendars = useActive(exportState.getCalendars);
+  const exportStatus = useActive(exportState.getExportStatus);
 
   const [calendars, setCalendars] = useLocalStorage(
     "export-selected-calendars",
@@ -94,7 +54,7 @@ export default function Export() {
             placeholder="Please select"
             value={calendars}
             onChange={setCalendars}
-            options={userCalendars.data?.map((item) => ({
+            options={userCalendars.map((item) => ({
               value: item.id,
               label: item.name,
             }))}

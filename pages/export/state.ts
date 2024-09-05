@@ -1,12 +1,12 @@
 import { trpc } from "@/utils/trpc";
 import dayjs from "dayjs";
-import { createQuery, createState } from "active-store";
+import { activeQuery, activeState } from "active-store";
 import * as XLSX from "xlsx";
 import type { Calendar, CalendarEvent } from "@/server/providers/types";
 
 function createExportState() {
-  const userCalendars = createQuery(trpc.calendars.query);
-  const exportStatus = createState<"success" | "error" | "loading">("success");
+  const userCalendars = activeQuery(trpc.calendars.query);
+  const exportStatus = activeState<"success" | "error" | "loading">("success");
   let lastCounter = 0;
 
   async function exportAsExcel(
@@ -33,7 +33,7 @@ function createExportState() {
       const row: Record<string, string | number> = {};
       const calendar = userCalendars
         .get()
-        .data?.find((calendar) => (calendar.id = e.calendarId));
+        .find((calendar) => (calendar.id = e.calendarId));
 
       for (const column of columns) {
         row[column] = availableColumns[column](e, calendar!);

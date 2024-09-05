@@ -1,61 +1,56 @@
 import styled, { createGlobalStyle } from "styled-components";
-import { Layout, Menu, Card, theme } from "antd";
+import { App, Layout, Menu, Card, theme } from "antd";
 import Head from "next/head";
-import React from "react";
-import {
-  HomeOutlined,
-  ExportOutlined,
-  ScheduleOutlined,
-} from "@ant-design/icons";
+import { useRouter } from "next/router";
+import React, { Suspense } from "react";
+import { HomeOutlined, ExportOutlined, ScheduleOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 import logo from "./logo.png";
 import AccountMenu from "./account-menu";
 
-import { useRouter } from "next/router";
+dayjs.extend(localizedFormat);
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
 
-export default function DefaultLayout({
-  children,
-}: React.PropsWithChildren<{}>) {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
+export default function DefaultLayout({ children }: React.PropsWithChildren<{}>) {
   const router = useRouter();
 
   const page = items.find((item) => item?.key === router.pathname);
-  console.log(router.pathname);
-
   return (
-    <Layout id="main-layout" hasSider>
-      <Head>
-        <title>Roombelt calendar utils</title>
-        <meta name="description" content="Various utilities for calendar" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <GlobalStyles />
-      <FixedSider>
-        <Logo src={logo.src} />
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[router.pathname]}
-          items={items}
-          onSelect={(item) => router.push(item.key)}
-        />
-        <AccountMenu />
-      </FixedSider>
-      <PageWrapper>
-        <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
-          <Card title={page?.label ?? "Roombelt Utils"}>{children}</Card>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Roombelt Utils©{new Date().getFullYear()} Created by Mateusz Zieliński
-        </Footer>
-      </PageWrapper>
-    </Layout>
+    <App className="ant-app">
+      <Layout id="main-layout" hasSider>
+        <Head>
+          <title>Roombelt calendar utils</title>
+          <meta name="description" content="Various utilities for calendar" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <GlobalStyles />
+        <FixedSider>
+          <Logo src={logo.src} />
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[router.pathname]}
+            items={items}
+            onSelect={(item) => router.push(item.key)}
+          />
+          <AccountMenu />
+        </FixedSider>
+        <PageWrapper>
+          <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+            <Card title={page?.label ?? "Roombelt Utils"}>
+              <Suspense fallback="Loading data...">{children}</Suspense>
+            </Card>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            Roombelt Utils©{new Date().getFullYear()} Created by Mateusz Zieliński
+          </Footer>
+        </PageWrapper>
+      </Layout>
+    </App>
   );
 }
 
@@ -72,13 +67,13 @@ const items: { key: string; label: string; icon: React.ReactNode }[] = [
   },
   {
     key: "/book",
-    label: "Book a room",
+    label: "Meeting planner",
     icon: <ScheduleOutlined />,
   },
 ];
 
 const GlobalStyles = createGlobalStyle`
-  body, html, #__next, #main-layout {
+  body, html, #__next, #main-layout, .ant-app {
     padding: 0;
     margin: 0;
     width: 100%;

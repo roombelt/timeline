@@ -1,10 +1,7 @@
 import { z } from "zod";
-import ms from "ms";
 import { procedure, router } from "./setup";
 
 export const appRouter = router({
-  test: procedure.query(() => ({ res: "Hello world!" })),
-
   calendars: procedure.query((opts) => opts.ctx.calendar.getCalendars()),
   events: procedure
     .input(
@@ -15,12 +12,20 @@ export const appRouter = router({
       })
     )
     .query((opts) =>
-      opts.ctx.calendar.getEvents(
+      opts.ctx.calendar.getEvents(opts.input.calendarId, opts.input.startTimestamp, opts.input.endTimestamp)
+    ),
+  createEvent: procedure
+    .input(
+      z.object({ calendarId: z.string(), startTimestamp: z.number(), endTimestamp: z.number(), summary: z.string() })
+    )
+    .mutation((opts) => {
+      return opts.ctx.calendar.createEvent(
         opts.input.calendarId,
+        opts.input.summary,
         opts.input.startTimestamp,
         opts.input.endTimestamp
-      )
-    ),
+      );
+    }),
 });
 
 export type AppRouter = typeof appRouter;
