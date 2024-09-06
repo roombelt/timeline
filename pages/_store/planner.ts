@@ -7,6 +7,7 @@ import { trpc } from "../api/trpc/_client";
 
 export default function activePlannerState({ userCalendars, calendarEvents, refreshEvents }: ActiveApiQueries) {
   const resourceAreaWidth = activeLocalStorage("resource-area-width", 200);
+
   const timeRange = activeState({
     start: dayjs().startOf("day").valueOf(),
     end: dayjs().endOf("day").valueOf(),
@@ -61,11 +62,7 @@ export default function activePlannerState({ userCalendars, calendarEvents, refr
         visibleCalendarsIds.set(value);
       },
     },
-    visibleEvents: {
-      ...visibleEvents,
-      refreshEvents,
-      isLoading,
-    },
+    visibleEvents: { ...visibleEvents, refreshEvents, isLoading },
     resourceAreaWidth,
     newMeeting: activeNewMeeting(refreshEvents),
     removeMeeting: async (calendarId: string, eventId: string) => {

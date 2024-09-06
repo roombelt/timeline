@@ -27,6 +27,7 @@ export default function BookHelper() {
   const resourceAreaWidth = useActive(store.planner.resourceAreaWidth.get);
   const app = App.useApp();
 
+  const getCalendar = (calendarId: string) => calendars.find((c) => c.id === calendarId);
   const getCalendarApi = () => fullCalendar.current!.getApi();
 
   return (
@@ -43,6 +44,7 @@ export default function BookHelper() {
           resourceId: item.calendarId,
           start: toTimestamp(item.start),
           end: toTimestamp(item.end),
+          color: getCalendar(item.calendarId)?.color,
         }))}
         headerToolbar={false}
         nowIndicator

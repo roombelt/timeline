@@ -1,5 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
-import { App, Layout, Menu, ConfigProvider } from "antd";
+import { App, Layout, ConfigProvider, Spin, Flex } from "antd";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { Suspense } from "react";
@@ -70,13 +70,33 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
             <AccountMenu />
           </Header>
           <Content style={{ margin: 0, padding: 0, background: "white" }}>
-            <Suspense fallback="Loading data...">{children}</Suspense>
+            <Suspense fallback={<FullPageLoader />} children={children} />
           </Content>
         </Layout>
       </App>
     </ConfigProvider>
   );
 }
+
+function FullPageLoader() {
+  return (
+    <FullPageLoaderWrapper>
+      <Spin tip="Loading" size="large" />
+      <div>Loading your calendars...</div>
+    </FullPageLoaderWrapper>
+  );
+}
+
+const FullPageLoaderWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-direction: column;
+  font-size: 18px;
+`;
 
 const items: { key: string; label: string; icon: React.ReactNode }[] = [
   {

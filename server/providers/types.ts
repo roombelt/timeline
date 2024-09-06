@@ -14,6 +14,7 @@ export interface CalendarProvider {
 export interface Calendar {
   id: string;
   name: string;
+  color: string;
 }
 
 export interface CalendarEvent {

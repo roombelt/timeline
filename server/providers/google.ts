@@ -34,6 +34,7 @@ export default class GoogleProvider implements CalendarProvider {
     return result.data.items.map((item) => ({
       id: item.id!,
       name: item.summary!,
+      color: item.backgroundColor ?? "",
     }));
   }
 
