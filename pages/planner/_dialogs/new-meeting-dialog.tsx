@@ -27,13 +27,15 @@ export default function NewMeetingDialog() {
     }
   }
 
+  const isFormValid = !!data?.summary?.trim();
+
   return (
     <Modal
       title={
         <Input
           ref={firstFieldRef}
           variant="filled"
-          placeholder="Meeting title"
+          placeholder="Meeting title (required)"
           value={data?.summary}
           onChange={(e) => store.planner.newMeeting.setSummary(e.target.value)}
         />
@@ -41,7 +43,7 @@ export default function NewMeetingDialog() {
       open={isOpen}
       closable={false}
       maskClosable={false}
-      okButtonProps={{ loading: isCreating }}
+      okButtonProps={{ loading: isCreating, disabled: !isFormValid }}
       onOk={create}
       onCancel={store.planner.newMeeting.close}
     >
@@ -62,7 +64,7 @@ export default function NewMeetingDialog() {
         <Descriptions>
           <Descriptions.Item label="Day">{dayjs(data?.startTimestamp).format("L")} </Descriptions.Item>
           <Descriptions.Item label="Start">{dayjs(data?.startTimestamp).format("LT")}</Descriptions.Item>
-          <Descriptions.Item label="End">{dayjs(data?.startTimestamp).format("LT")}</Descriptions.Item>
+          <Descriptions.Item label="End">{dayjs(data?.endTimestamp).format("LT")}</Descriptions.Item>
         </Descriptions>
       </Form>
     </Modal>
