@@ -69,11 +69,18 @@ export default class GoogleProvider implements CalendarProvider {
     return items.map((event) => mapEvent(calendarId, event));
   }
 
-  async createEvent(calendarId: string, summary: string, startTimestamp: number, endTimestamp: number) {
+  async createEvent(
+    calendarId: string,
+    summary: string,
+    description: string,
+    startTimestamp: number,
+    endTimestamp: number
+  ) {
     const query = {
       calendarId: calendarId,
       resource: {
         summary,
+        description,
         start: { dateTime: new Date(startTimestamp).toISOString() },
         end: { dateTime: new Date(endTimestamp).toISOString() },
       },
@@ -81,6 +88,16 @@ export default class GoogleProvider implements CalendarProvider {
 
     const result = await this.calendarClient.events.insert(query);
     return mapEvent(calendarId, result.data);
+  }
+
+  async deleteEvent(calendarId: string, eventId: string) {
+    const query = {
+      calendarId: calendarId,
+      eventId: eventId,
+      sendUpdates: "all",
+    };
+
+    await this.calendarClient.events.delete(query);
   }
 }
 

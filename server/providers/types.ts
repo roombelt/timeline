@@ -4,9 +4,11 @@ export interface CalendarProvider {
   createEvent: (
     calendarId: string,
     summary: string,
+    description: string,
     startTimestamp: number,
     endTimestamp: number
   ) => Promise<CalendarEvent>;
+  deleteEvent: (calendarId: string, eventId: string) => Promise<void>;
 }
 
 export interface Calendar {

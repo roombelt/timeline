@@ -11,21 +11,12 @@ export default function AccountMenu() {
     return <div />;
   }
 
-  if (status === "unauthenticated") {
-    return (
-      <AccountBox>
-        <Button
-          type="primary"
-          onClick={() => signIn("google")}
-          style={{ margin: 10 }}
-        >
-          Sign in
-        </Button>
-      </AccountBox>
-    );
-  }
-
   const items: MenuProps["items"] = [
+    {
+      key: "help",
+      onClick: () => alert("Help"),
+      label: "Help",
+    },
     {
       key: "logout",
       onClick: () => signOut(),
@@ -38,13 +29,7 @@ export default function AccountMenu() {
       <Dropdown menu={{ items }} trigger={["click"]} placement="bottomLeft">
         <AccountBox>
           <AccountButton>
-            <Image
-              width={32}
-              height={32}
-              src={session.user.image!}
-              alt="User avatar"
-              unoptimized
-            />
+            <Image width={32} height={32} src={session.user.image!} alt="User avatar" unoptimized />
             {session.user.name}
           </AccountButton>
         </AccountBox>
@@ -55,15 +40,13 @@ export default function AccountMenu() {
 
 const AccountBox = styled.div`
   color: white;
-  background: #002140;
   margin: 0;
-  border-top: 1px solid #888;
   display: flex;
   justify-content: center;
 `;
 
 const AccountButton = styled.button`
-  padding: 10px 0;
+  padding: 0;
   width: 100%;
   border: none;
   display: flex;
