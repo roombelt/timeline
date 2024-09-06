@@ -45,8 +45,8 @@ importers:
         specifier: ^4.17.7
         version: 4.17.7
       active-store:
-        specifier: ^0.1.4
-        version: 0.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.1.5
+        version: 0.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd:
         specifier: ^5.20.3
         version: 5.20.3(date-fns@3.6.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -74,6 +74,9 @@ importers:
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
+      react-resize-detector:
+        specifier: ^11.0.1
+        version: 11.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-use:
         specifier: ^17.5.1
         version: 17.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -509,8 +512,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  active-store@0.1.4:
-    resolution: {integrity: sha512-rP2axB/2L/fadAkK/YOEtCYjZ+Eykqv/Q51vIsEx+9VQ5bPgM8rGGqsIorPPO+CDXvdeOypYNJJZsGwcYSP/9w==}
+  active-store@0.1.5:
+    resolution: {integrity: sha512-yJeixZ/XwWMxZgP/ZMDcLc6CGkrjNhE8apG4mWiu7scfZobSYgR+NqbsGxbFlExdKvEpN6BQvX006LPGtP/oPg==}
     peerDependencies:
       react: ^18.3.1
       react-dom: ^18.3.1
@@ -1818,6 +1821,12 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
+  react-resize-detector@11.0.1:
+    resolution: {integrity: sha512-1Tdgu6Ou3vI3RQD+o2/kTvDibb4NRe7Oh83hIjNNEXb6WKKCQT99VQlh3Xlbdq2HtkUoFEMrgMMKkYI83YbD7Q==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+
   react-universal-interface@0.6.2:
     resolution: {integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==}
     peerDependencies:
@@ -2611,7 +2620,7 @@ snapshots:
 
   acorn@8.12.1: {}
 
-  active-store@0.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  active-store@0.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -4304,6 +4313,12 @@ snapshots:
   react-is@16.13.1: {}
 
   react-is@18.3.1: {}
+
+  react-resize-detector@11.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      lodash: 4.17.21
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-universal-interface@0.6.2(react@18.3.1)(tslib@2.7.0):
     dependencies:

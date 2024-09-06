@@ -48,7 +48,7 @@ export default function NewMeetingDialog() {
       onCancel={store.planner.newMeeting.close}
     >
       <Form layout="vertical">
-        <div style={{ marginBottom: 10, marginTop: 5 }}>
+        <div style={{ marginBottom: 10, marginTop: 10 }}>
           <Input.TextArea
             variant="filled"
             placeholder="Optionally, provide meeting description here"
@@ -57,7 +57,7 @@ export default function NewMeetingDialog() {
             onChange={(e) => store.planner.newMeeting.setDescription(e.target.value)}
           />
         </div>
-        <div>
+        <div style={{ marginBottom: 5 }}>
           <Typography.Text type="secondary">Calendar: </Typography.Text>
           <Typography.Text>{calendars.find((item) => item.id == data?.calendarId)?.name}</Typography.Text>
         </div>

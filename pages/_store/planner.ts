@@ -6,6 +6,7 @@ import type { CalendarEvent } from "@/server/providers/types";
 import { trpc } from "../api/trpc/_client";
 
 export default function activePlannerState({ userCalendars, calendarEvents, refreshEvents }: ActiveApiQueries) {
+  const resourceAreaWidth = activeLocalStorage("resource-area-width", 200);
   const timeRange = activeState({
     start: dayjs().startOf("day").valueOf(),
     end: dayjs().endOf("day").valueOf(),
@@ -27,20 +28,20 @@ export default function activePlannerState({ userCalendars, calendarEvents, refr
         startTimestamp: timeRange.get().start,
         endTimestamp: timeRange.get().end,
       });
-      if (state.hasData) {
+      if (state.isSuccess) {
         data.push(...state.data!);
       }
     }
     return data;
   });
 
-  const loadingStatus = activeComputed((calendarId: string) => {
+  const isLoading = activeComputed((calendarId: string) => {
     const state = calendarEvents.state({
       calendarId,
       startTimestamp: timeRange.get().start,
       endTimestamp: timeRange.get().end,
     });
-    return state.status;
+    return state.isFetching;
   });
 
   return {
@@ -60,8 +61,12 @@ export default function activePlannerState({ userCalendars, calendarEvents, refr
         visibleCalendarsIds.set(value);
       },
     },
-    visibleEvents: { ...visibleEvents, refreshEvents },
-    loadingStatus,
+    visibleEvents: {
+      ...visibleEvents,
+      refreshEvents,
+      isLoading,
+    },
+    resourceAreaWidth,
     newMeeting: activeNewMeeting(refreshEvents),
     removeMeeting: async (calendarId: string, eventId: string) => {
       await trpc.deleteEvent.mutate({ calendarId, eventId });
