@@ -13,6 +13,10 @@ function createAppStore() {
       ...api.userCalendars,
       getById: (id?: string) => api.userCalendars.get().find((item) => item.id === id),
     },
+
+    showApp(delay = 0) {
+      setTimeout(() => document.body.classList.add("app-loaded"), delay);
+    },
   };
 }
 

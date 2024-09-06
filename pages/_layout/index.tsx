@@ -1,7 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 import { App, Layout, ConfigProvider, Spin, Flex } from "antd";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React, { Suspense } from "react";
 import { ExportOutlined, ScheduleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -14,9 +13,6 @@ dayjs.extend(localizedFormat);
 const { Content, Header } = Layout;
 
 export default function DefaultLayout({ children }: React.PropsWithChildren<{}>) {
-  const router = useRouter();
-
-  const page = items.find((item) => item?.key === router.pathname);
   return (
     <ConfigProvider
       theme={{

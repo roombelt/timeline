@@ -1,6 +1,6 @@
 import { App } from "antd";
 import { useActive } from "active-store";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import dayjs from "dayjs";
@@ -26,6 +26,8 @@ export default function BookHelper() {
   const events = useActive(store.planner.visibleEvents.get);
   const resourceAreaWidth = useActive(store.planner.resourceAreaWidth.get);
   const app = App.useApp();
+
+  useEffect(() => store.showApp(100), []);
 
   const getCalendar = (calendarId: string) => calendars.find((c) => c.id === calendarId);
   const getCalendarApi = () => fullCalendar.current!.getApi();
@@ -77,7 +79,6 @@ export default function BookHelper() {
             },
           });
         }}
-        dateClick={console.log}
         select={(info) =>
           store.planner.newMeeting.open(
             info.resource!.id,
