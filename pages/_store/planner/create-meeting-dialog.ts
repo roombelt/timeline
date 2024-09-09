@@ -4,7 +4,7 @@ import { trpc } from "../../api/trpc/_client";
 
 export default function activeCreateMeetingDialog(refresh: (calendarId: string) => Promise<any>) {
   const isSaving = activeState(false);
-  const data = activeState<{
+  const state = activeState<{
     calendarId: string;
     startTimestamp: number;
     endTimestamp: number;
@@ -14,7 +14,7 @@ export default function activeCreateMeetingDialog(refresh: (calendarId: string) 
 
   return {
     open(calendarId: string, start: Date, end: Date, summary: string) {
-      data.set({
+      state.set({
         calendarId: calendarId,
         startTimestamp: dayjs(start).valueOf(),
         endTimestamp: dayjs(end).valueOf(),
@@ -22,19 +22,19 @@ export default function activeCreateMeetingDialog(refresh: (calendarId: string) 
         description: "",
       });
     },
-    close: () => data.set(null),
-    data: { get: data.get },
+    close: () => state.set(null),
+    data: { get: state.get },
     isSaving,
-    setSummary: (summary: string) => data.set({ ...data.get()!, summary }),
-    setDescription: (description: string) => data.set({ ...data.get()!, description }),
+    setSummary: (summary: string) => state.set({ ...state.get()!, summary }),
+    setDescription: (description: string) => state.set({ ...state.get()!, description }),
     async save() {
-      const value = data.get();
+      const value = state.get();
       if (!value) {
         return;
       }
       await trpc.createEvent.mutate(value);
       await refresh(value.calendarId);
-      data.set(null);
+      state.set(null);
     },
   };
 }

@@ -36,6 +36,9 @@ export const appRouter = router({
   deleteEvent: procedure
     .input(z.object({ calendarId: z.string(), eventId: z.string() }))
     .mutation(({ input, ctx }) => ctx.calendar.deleteEvent(input.calendarId, input.eventId)),
+  getEvent: procedure
+    .input(z.object({ calendarId: z.string(), eventId: z.string() }))
+    .query(({ input, ctx }) => ctx.calendar.getEvent(input.calendarId, input.eventId)),
 });
 
 export type AppRouter = typeof appRouter;

@@ -41,7 +41,7 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
       <App className="ant-app">
         <Layout id="main-layout">
           <Head>
-            <title>Roombelt calendar utils</title>
+            <title>Roombelt - Meeting Planner</title>
             <meta name="description" content="Various utilities for calendar" />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/favicon.ico" />
@@ -68,7 +68,7 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
                 fontSize: 16,
               }}
             >
-              Roombelt Office Manager
+              Roombelt Meeting Planner
             </div>
             {/* <Menu
               theme="dark"

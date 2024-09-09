@@ -33,7 +33,7 @@ export default function ViewMeetingDialog() {
           <DeleteOutlined />
         </Button>
       </Popconfirm>
-      <Button onClick={() => store.planner.viewMeetingDialog.show(null)} disabled={isRemoving} type="primary">
+      <Button onClick={() => store.planner.viewMeetingDialog.close()} disabled={isRemoving} type="primary">
         Close
       </Button>
     </Space>
@@ -52,6 +52,20 @@ export default function ViewMeetingDialog() {
           <Descriptions.Item label="Start">{toDayJS(event?.start)?.format("LT")}</Descriptions.Item>
           <Descriptions.Item label="End">{toDayJS(event?.end)?.format("LT")}</Descriptions.Item>
         </Descriptions>
+
+        {event?.organizer && (
+          <div style={{ marginTop: 5 }}>
+            <Typography.Text type="secondary">Organizer: </Typography.Text>
+            <Typography.Text> {event?.organizer}</Typography.Text>
+          </div>
+        )}
+
+        {!!event?.participants.length && (
+          <div style={{ marginTop: 5 }}>
+            <Typography.Text type="secondary">Participants: </Typography.Text>
+            <Typography.Text> {event?.participants.join(", ")}</Typography.Text>
+          </div>
+        )}
       </Form>
     </Modal>
   );

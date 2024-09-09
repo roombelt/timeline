@@ -6,11 +6,15 @@ import { attachRefetchOnTabVisible } from "./utils";
 export function activeApiQueries() {
   const userCalendars = activeQuery(trpc.calendars.query);
   const calendarEvents = activeQuery(trpc.events.query);
+  const singleEvent = activeQuery(trpc.getEvent.query);
 
   attachRefetchOnTabVisible(calendarEvents, ms("5s"));
 
-  function refreshEvents(calendarId?: string) {
-    return calendarEvents.invalidate((input) => !calendarId || input.calendarId === calendarId).catch(() => null);
+  async function refreshEvents(calendarId?: string) {
+    await Promise.allSettled([
+      calendarEvents.invalidate((input) => !calendarId || input.calendarId === calendarId),
+      singleEvent.invalidate((input) => !calendarId || input.calendarId === calendarId),
+    ]);
   }
 
   async function removeEvent(calendarId: string, eventId: string) {
@@ -21,6 +25,7 @@ export function activeApiQueries() {
   return {
     userCalendars,
     calendarEvents,
+    singleEvent,
     refreshEvents,
     removeEvent,
   };

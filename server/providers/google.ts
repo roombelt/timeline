@@ -1,7 +1,6 @@
 import { google, calendar_v3 } from "googleapis";
-import { CalendarEvent, CalendarProvider } from "./types";
+import { CalendarProvider } from "./types";
 import dayjs from "dayjs";
-// import { getDate, getMonth, getTime, getYear } from "date-fns";
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -68,6 +67,11 @@ export default class GoogleProvider implements CalendarProvider {
     }
 
     return items.map((event) => mapEvent(calendarId, event));
+  }
+
+  async getEvent(calendarId: string, eventId: string) {
+    const response = await this.calendarClient.events.get({ calendarId, eventId });
+    return mapEvent(calendarId, response.data);
   }
 
   async createEvent(

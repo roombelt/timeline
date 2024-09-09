@@ -43,6 +43,7 @@ export default function BookHelper() {
       <FullCalendar
         ref={fullCalendar}
         plugins={[interactionPlugin, resourceTimelinePlugin]}
+        schedulerLicenseKey="GPL-My-Project-Is-Open-Source"
         initialView="resourceTimelineDay"
         events={events.map((item) => ({
           title: item.summary,
@@ -73,8 +74,7 @@ export default function BookHelper() {
         slotDuration="00:15:00"
         eventClick={(info) => {
           const [calendarId, eventId] = info.event.id.split("~~~");
-          const event = events.find((item) => item.calendarId === calendarId && item.id === eventId) ?? null;
-          store.planner.viewMeetingDialog.show(event);
+          store.planner.viewMeetingDialog.open(calendarId, eventId);
         }}
         select={(info) =>
           store.planner.createMeetingDialog.open(

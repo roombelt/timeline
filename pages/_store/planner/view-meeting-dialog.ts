@@ -1,8 +1,11 @@
-import { activeComputed, activeState } from "active-store";
+import { ActiveComputed, activeComputed, activeState } from "active-store";
 import type { ActiveApiQueries } from "../trpc";
 import type { CalendarEvent } from "@/server/providers/types";
 
-export default function activeViewMeetingDialog(api: ActiveApiQueries) {
+export default function activeViewMeetingDialog(
+  api: ActiveApiQueries,
+  visibleEvents: ActiveComputed<() => CalendarEvent[]>
+) {
   const visibleEvent = activeState<null | CalendarEvent>(null);
   const removeState = activeState({ isRemoving: false, error: null as any });
   const eventWithCalendar = activeComputed(() => {
@@ -16,9 +19,14 @@ export default function activeViewMeetingDialog(api: ActiveApiQueries) {
 
   return {
     get: eventWithCalendar.get,
-    show(event: CalendarEvent | null) {
+    async open(calendarId: string, eventId: string) {
       removeState.set({ isRemoving: false, error: null });
-      visibleEvent.set(event);
+      const event = visibleEvents.state().data?.find((item) => item.calendarId === calendarId && item.id === eventId);
+      visibleEvent.set(event ?? null);
+    },
+    async close() {
+      removeState.set({ isRemoving: false, error: null });
+      visibleEvent.set(null);
     },
     async remove() {
       const event = visibleEvent.get();

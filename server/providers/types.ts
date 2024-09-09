@@ -1,6 +1,7 @@
 export interface CalendarProvider {
   getCalendars: () => Promise<Calendar[]>;
   getEvents: (calendarId: string, timeMin: number, timeMax: number) => Promise<CalendarEvent[]>;
+  getEvent: (calendarId: string, eventId: string) => Promise<CalendarEvent>;
   createEvent: (
     calendarId: string,
     summary: string,

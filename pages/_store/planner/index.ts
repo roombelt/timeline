@@ -68,6 +68,6 @@ export default function activePlannerState(api: ActiveApiQueries) {
     resourceAreaWidth,
     createMeetingDialog: activeCreateMeetingDialog(api.refreshEvents),
     welcomeDialog: activeWelcomeDialog(visibleCalendarsIds),
-    viewMeetingDialog: activeViewMeetingDialog(api),
+    viewMeetingDialog: activeViewMeetingDialog(api, visibleEvents),
   };
 }
