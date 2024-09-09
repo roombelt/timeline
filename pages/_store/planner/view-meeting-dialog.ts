@@ -8,7 +8,7 @@ export default function activeViewMeetingDialog(
 ) {
   const visibleEvent = activeState<null | CalendarEvent>(null);
   const removeState = activeState({ isRemoving: false, error: null as any });
-  const eventWithCalendar = activeComputed(() => {
+  const state = activeComputed(() => {
     const event = visibleEvent.get();
     return {
       event,
@@ -18,7 +18,7 @@ export default function activeViewMeetingDialog(
   });
 
   return {
-    get: eventWithCalendar.get,
+    get: state.get,
     async open(calendarId: string, eventId: string) {
       removeState.set({ isRemoving: false, error: null });
       const event = visibleEvents.state().data?.find((item) => item.calendarId === calendarId && item.id === eventId);

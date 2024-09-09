@@ -1,4 +1,4 @@
-import { activeQuery, ActiveQuery } from "active-store";
+import { activeQuery } from "active-store";
 import { trpc } from "@/pages/api/trpc/_client";
 import ms from "ms";
 import { attachRefetchOnTabVisible } from "./utils";
