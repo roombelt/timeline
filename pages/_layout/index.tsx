@@ -1,18 +1,32 @@
 import styled, { createGlobalStyle } from "styled-components";
-import { App, Layout, ConfigProvider, Spin, Flex } from "antd";
+import { App, Layout, ConfigProvider, Spin, Button } from "antd";
 import Head from "next/head";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { ExportOutlined, ScheduleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { ErrorBoundary } from "react-error-boundary";
 
 import AccountMenu from "./account-menu";
+import { signIn } from "next-auth/react";
+import store from "../_store";
+import { useActive } from "active-store";
 
 dayjs.extend(localizedFormat);
 
 const { Content, Header } = Layout;
 
 export default function DefaultLayout({ children }: React.PropsWithChildren<{}>) {
+  const hasAccess = useActive(store.hasAccessToCalendars.state);
+
+  if (hasAccess.status === "pending") {
+    return null;
+  }
+
+  if (!hasAccess.data) {
+    return <SignIn />;
+  }
+
   return (
     <ConfigProvider
       theme={{
@@ -66,7 +80,9 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
             <AccountMenu />
           </Header>
           <Content style={{ margin: 0, padding: 0, background: "white" }}>
-            <Suspense fallback={<FullPageLoader />} children={children} />
+            <ErrorBoundary FallbackComponent={ErrorFallback}>
+              <Suspense fallback={<FullPageLoader />} children={children} />
+            </ErrorBoundary>
           </Content>
         </Layout>
       </App>
@@ -74,10 +90,37 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
   );
 }
 
+function SignIn() {
+  useEffect(store.showApp, []);
+
+  return (
+    <FullPageLoaderWrapper>
+      <div>Please sign in below.</div>
+      <Button type="primary" onClick={() => signIn("google")}>
+        Sign in with Google
+      </Button>
+    </FullPageLoaderWrapper>
+  );
+}
+
+function ErrorFallback({ error }: { error: any }) {
+  useEffect(store.showApp, []);
+
+  return (
+    <FullPageLoaderWrapper>
+      <div>There was an error while loading the page:</div>
+      <div>{error.message}</div>
+      <Button type="primary" onClick={() => (window.location.href = window.location.href)}>
+        Reload page
+      </Button>
+    </FullPageLoaderWrapper>
+  );
+}
+
 function FullPageLoader() {
   return (
     <FullPageLoaderWrapper>
-      <Spin tip="Loading" size="large" />
+      <Spin size="large" />
       <div>Loading your calendars...</div>
     </FullPageLoaderWrapper>
   );

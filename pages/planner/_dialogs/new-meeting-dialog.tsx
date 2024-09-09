@@ -7,7 +7,7 @@ import store from "@/pages/_store";
 
 export default function NewMeetingDialog() {
   const [isCreating, setCreating] = useState(false);
-  const data = useActive(store.planner.newMeeting.data.get);
+  const data = useActive(store.planner.createMeetingDialog.data.get);
   const calendars = useActive(() => store.planner.visibleCalendars.get());
   const app = App.useApp();
   const firstFieldRef = useRef<InputRef>(null);
@@ -18,7 +18,7 @@ export default function NewMeetingDialog() {
   async function create() {
     try {
       setCreating(true);
-      await store.planner.newMeeting.save();
+      await store.planner.createMeetingDialog.save();
       setCreating(false);
       app.notification.success({ message: "Meeting created" });
     } catch (error) {
@@ -37,7 +37,7 @@ export default function NewMeetingDialog() {
           variant="filled"
           placeholder="Meeting title (required)"
           value={data?.summary}
-          onChange={(e) => store.planner.newMeeting.setSummary(e.target.value)}
+          onChange={(e) => store.planner.createMeetingDialog.setSummary(e.target.value)}
         />
       }
       open={isOpen}
@@ -45,7 +45,7 @@ export default function NewMeetingDialog() {
       maskClosable={false}
       okButtonProps={{ loading: isCreating, disabled: !isFormValid }}
       onOk={create}
-      onCancel={store.planner.newMeeting.close}
+      onCancel={store.planner.createMeetingDialog.close}
     >
       <Form layout="vertical">
         <div style={{ marginBottom: 10, marginTop: 10 }}>
@@ -54,7 +54,7 @@ export default function NewMeetingDialog() {
             placeholder="Optionally, provide meeting description here"
             autoSize={{ minRows: 2, maxRows: 6 }}
             value={data?.description}
-            onChange={(e) => store.planner.newMeeting.setDescription(e.target.value)}
+            onChange={(e) => store.planner.createMeetingDialog.setDescription(e.target.value)}
           />
         </div>
         <div style={{ marginBottom: 5 }}>

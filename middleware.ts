@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export const config = {
-  matcher: ["/((?!_next).*_.*)"],
-};
-
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  return new NextResponse(null, { status: 404 });
+export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  if (path.includes("_")) {
+    return new NextResponse(null, { status: 404 });
+  }
 }
+
+// Routes Middleware should not run on
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+};

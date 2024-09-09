@@ -15,22 +15,20 @@ export default function ConfigureDialog({ open, onClose }: { open: boolean; onCl
       onCancel={onClose}
       footer={<Button type="primary" onClick={onClose} children="OK" />}
     >
-      <Form labelCol={{ span: 4 }} wrapperCol={{ span: 14 }}>
-        <Form.Item label="Calendars">
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Please select"
-            value={visibleCalendarsIds}
-            onChange={store.planner.visibleCalendars.setIds}
-            options={userCalendars.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-            optionFilterProp="label"
-          />
-        </Form.Item>
-      </Form>
+      <p> Please select calendars you'd like to see on the timeline:</p>
+      <Select
+        style={{ width: "100%" }}
+        mode="multiple"
+        allowClear
+        placeholder="Please select"
+        value={visibleCalendarsIds}
+        onChange={store.planner.visibleCalendars.setIds}
+        options={userCalendars.map((item) => ({
+          value: item.id,
+          label: item.name,
+        }))}
+        optionFilterProp="label"
+      />
     </Modal>
   );
 }
