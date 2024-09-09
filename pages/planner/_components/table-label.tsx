@@ -14,8 +14,7 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import type { ColHeaderContentArg } from "@fullcalendar/resource";
-
-import store from "@/pages/_store";
+import { AppStore, useStore } from "@/pages/_store";
 
 type TableLabelProps = {
   openConfig: () => void;
@@ -25,12 +24,13 @@ type TableLabelProps = {
 
 export default function TableLabel({ openConfig, getCalendarApi }: TableLabelProps) {
   const [isLoading, setLoading] = useState(false);
+  const store = useStore();
   const time = useActive(store.planner.timeRange.get);
 
   const { ref } = useResizeDetector({
     handleHeight: false,
     refreshMode: "debounce",
-    onResize: saveResourceAreaWidth,
+    onResize: () => saveResourceAreaWidth(store),
   });
 
   async function refreshAllCalendars() {
@@ -73,7 +73,7 @@ export default function TableLabel({ openConfig, getCalendarApi }: TableLabelPro
 
 export const TABLE_LABEL_ELEMENT_CLASS = "planner-resources-header";
 
-function saveResourceAreaWidth() {
+function saveResourceAreaWidth(store: AppStore) {
   const el = document.querySelector(`.${TABLE_LABEL_ELEMENT_CLASS}`);
   if (el) {
     // +1 due to a border on a parent element

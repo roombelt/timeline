@@ -9,14 +9,15 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import AccountMenu from "./account-menu";
 import { signIn } from "next-auth/react";
-import store from "../_store";
 import { useActive } from "active-store";
+import { useStore } from "../_store";
 
 dayjs.extend(localizedFormat);
 
 const { Content, Header } = Layout;
 
 export default function DefaultLayout({ children }: React.PropsWithChildren<{}>) {
+  const store = useStore();
   const hasAccess = useActive(store.hasAccessToCalendars.state);
 
   if (hasAccess.status === "pending") {
@@ -91,6 +92,7 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
 }
 
 function SignIn() {
+  const store = useStore();
   useEffect(store.showApp, []);
 
   return (
@@ -104,6 +106,7 @@ function SignIn() {
 }
 
 function ErrorFallback({ error }: { error: any }) {
+  const store = useStore();
   useEffect(store.showApp, []);
 
   return (

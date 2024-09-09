@@ -5,13 +5,9 @@ import { activeLocalStorage } from "../utils";
 import type { CalendarEvent } from "@/server/providers/types";
 import activeWelcomeDialog from "./welcome-dialog";
 import activeCreateMeetingDialog from "./create-meeting-dialog";
+import activeViewMeetingDialog from "./view-meeting-dialog";
 
-export default function activePlannerState({
-  userCalendars,
-  calendarEvents,
-  refreshEvents,
-  removeEvent,
-}: ActiveApiQueries) {
+export default function activePlannerState(api: ActiveApiQueries) {
   const resourceAreaWidth = activeLocalStorage("resource-area-width", 300);
 
   const timeRange = activeState({
@@ -22,7 +18,7 @@ export default function activePlannerState({
   const visibleCalendarsIds = activeLocalStorage<string[]>("visible-calendars", []);
   const visibleCalendars = activeComputed(() => {
     return visibleCalendarsIds.get().map((id) => {
-      const calendar = userCalendars.get().find((item) => item.id === id);
+      const calendar = api.userCalendars.get().find((item) => item.id === id);
       return calendar ?? { id, name: id, color: "blue" };
     });
   });
@@ -30,7 +26,7 @@ export default function activePlannerState({
   const visibleEvents = activeComputed(() => {
     const data: CalendarEvent[] = [];
     for (const calendarId of visibleCalendarsIds.get()) {
-      const state = calendarEvents.state({
+      const state = api.calendarEvents.state({
         calendarId,
         startTimestamp: timeRange.get().start,
         endTimestamp: timeRange.get().end,
@@ -43,7 +39,7 @@ export default function activePlannerState({
   });
 
   const isLoading = activeComputed((calendarId: string) => {
-    const state = calendarEvents.state({
+    const state = api.calendarEvents.state({
       calendarId,
       startTimestamp: timeRange.get().start,
       endTimestamp: timeRange.get().end,
@@ -56,7 +52,7 @@ export default function activePlannerState({
       get: timeRange.get,
       set(start: number, end: number) {
         timeRange.set({ start, end });
-        refreshEvents();
+        api.refreshEvents();
       },
     },
     visibleCalendars: {
@@ -68,9 +64,10 @@ export default function activePlannerState({
         visibleCalendarsIds.set(value);
       },
     },
-    visibleEvents: { ...visibleEvents, refreshEvents, removeEvent, isLoading },
+    visibleEvents: { ...visibleEvents, refreshEvents: api.refreshEvents, removeEvent: api.removeEvent, isLoading },
     resourceAreaWidth,
-    createMeetingDialog: activeCreateMeetingDialog(refreshEvents),
+    createMeetingDialog: activeCreateMeetingDialog(api.refreshEvents),
     welcomeDialog: activeWelcomeDialog(visibleCalendarsIds),
+    viewMeetingDialog: activeViewMeetingDialog(api),
   };
 }

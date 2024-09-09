@@ -3,6 +3,7 @@ import activeExportState from "./export";
 import activePlannerState from "./planner";
 import { activeQuery } from "active-store";
 import { trpc } from "../api/trpc/_client";
+import { createContext, useContext } from "react";
 
 function createAppStore() {
   const api = activeApiQueries();
@@ -32,4 +33,10 @@ function createAppStore() {
 }
 
 const store = createAppStore();
-export default store;
+const storeContext = createContext<AppStore>(store);
+
+export type AppStore = ReturnType<typeof createAppStore>;
+
+export function useStore() {
+  return useContext(storeContext);
+}

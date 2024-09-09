@@ -2,11 +2,11 @@ import { Form, Typography, Modal, Input, TimePicker, App, Descriptions, InputRef
 import { useActive } from "active-store";
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
-
-import store from "@/pages/_store";
+import { useStore } from "@/pages/_store";
 
 export default function NewMeetingDialog() {
   const [isCreating, setCreating] = useState(false);
+  const store = useStore();
   const data = useActive(store.planner.createMeetingDialog.data.get);
   const calendars = useActive(() => store.planner.visibleCalendars.get());
   const app = App.useApp();
@@ -20,10 +20,10 @@ export default function NewMeetingDialog() {
       setCreating(true);
       await store.planner.createMeetingDialog.save();
       setCreating(false);
-      app.notification.success({ message: "Meeting created" });
+      app.message.success("Meeting created");
     } catch (error) {
       setCreating(false);
-      app.notification.error({ message: "Error while creating meeting" });
+      app.message.error("Error while creating meeting");
     }
   }
 

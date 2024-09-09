@@ -5,10 +5,11 @@ import styled from "styled-components";
 
 import { DeleteOutlined, LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 import type { ResourceLabelContentArg } from "@fullcalendar/resource";
-
-import store from "@/pages/_store";
+import { useStore } from "@/pages/_store";
 
 export default function RowLabel({ resource }: { resource: ResourceLabelContentArg["resource"] }) {
+  const store = useStore();
+
   const isLoading = useActive(() => store.planner.visibleEvents.isLoading.get(resource.id));
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   return (

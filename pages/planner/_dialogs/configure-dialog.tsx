@@ -1,10 +1,10 @@
-import { Form, Button, Select, Modal } from "antd";
+import { Button, Select, Modal } from "antd";
 import { useActive } from "active-store";
 import React from "react";
-
-import store from "@/pages/_store";
+import { useStore } from "@/pages/_store";
 
 export default function ConfigureDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const store = useStore();
   const userCalendars = useActive(store.userCalendars.get);
   const visibleCalendarsIds = useActive(store.planner.visibleCalendars.getIds);
 

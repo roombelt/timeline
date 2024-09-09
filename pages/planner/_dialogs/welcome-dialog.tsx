@@ -1,10 +1,10 @@
 import { Button, Select, Modal, App } from "antd";
 import { useActive } from "active-store";
 import React, { useState } from "react";
-
-import store from "@/pages/_store";
+import { useStore } from "@/pages/_store";
 
 export default function WelcomeDialog() {
+  const store = useStore();
   const isVisible = useActive(store.planner.welcomeDialog.getVisible);
   const [calendarsIds, setCalendarsIds] = useState([]);
   const userCalendars = useActive(store.userCalendars.get);

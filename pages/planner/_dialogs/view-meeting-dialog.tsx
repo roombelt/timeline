@@ -1,24 +1,15 @@
 import { Form, Typography, Modal, Descriptions, Space, Button, Popconfirm, App } from "antd";
 import { useActive } from "active-store";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import dayjs from "dayjs";
 
-import store from "@/pages/_store";
-import type { CalendarEvent } from "@/server/providers/types";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useMutation } from "@/pages/_store/utils";
+import { useStore } from "@/pages/_store";
 
-export default function ViewMeetingDialog({ event, onClose }: { event: CalendarEvent | null; onClose: () => void }) {
+export default function ViewMeetingDialog() {
   const app = App.useApp();
-  const calendars = useActive(store.planner.visibleCalendars.state);
-  const calendar = calendars.data?.find((item) => item.id === event?.calendarId);
-
-  const removeMeeting = useMutation(store.planner.visibleEvents.removeEvent, {
-    onSuccess: () => {
-      onClose();
-      app.notification.success({ message: "Meeting removed" });
-    },
-  });
+  const store = useStore();
+  const { event, calendar, isRemoving } = useActive(store.planner.viewMeetingDialog.get);
 
   const footer = (
     <Space>
@@ -30,18 +21,19 @@ export default function ViewMeetingDialog({ event, onClose }: { event: CalendarE
             This operation cannot be reverted.
           </>
         }
-        onConfirm={() => removeMeeting.mutate(event!.calendarId, event!.id)}
+        open={isRemoving || undefined}
+        onConfirm={() => store.planner.viewMeetingDialog.remove().then(() => app.message.success("Meeting removed"))}
         okText="Yes"
-        okButtonProps={{ disabled: removeMeeting.isPending, loading: removeMeeting.isPending }}
-        cancelButtonProps={{ disabled: removeMeeting.isPending }}
+        okButtonProps={{ disabled: isRemoving, loading: isRemoving }}
+        cancelButtonProps={{ disabled: isRemoving }}
         cancelText="No"
         placement="bottom"
       >
-        <Button danger disabled={removeMeeting.isPending}>
+        <Button danger disabled={isRemoving}>
           <DeleteOutlined />
         </Button>
       </Popconfirm>
-      <Button onClick={onClose} disabled={removeMeeting.isPending} type="primary">
+      <Button onClick={() => store.planner.viewMeetingDialog.show(null)} disabled={isRemoving} type="primary">
         Close
       </Button>
     </Space>

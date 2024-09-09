@@ -4,12 +4,13 @@ import dayjs from "dayjs";
 
 import { useActive } from "active-store";
 import { useLocalStorage } from "react-use";
-import store from "../_store";
 import { columnsAvailableForExport } from "../_store/export";
+import { useStore } from "../_store";
 
 const { RangePicker } = DatePicker;
 
 export default function Export() {
+  const store = useStore();
   const userCalendars = useActive(store.userCalendars.get);
   const exportStatus = useActive(store.export.status.get);
 
