@@ -5,11 +5,11 @@ import dayjs from "dayjs";
 import { useStore } from "@/src/store";
 
 export default function NewMeetingDialog() {
+  const app = App.useApp();
   const [isCreating, setCreating] = useState(false);
   const store = useStore();
-  const data = useActive(store.planner.createMeetingDialog.data.get);
-  const calendars = useActive(() => store.planner.visibleCalendars.get());
-  const app = App.useApp();
+  const data = useActive(store.planner.createMeetingDialog.data);
+  const calendars = useActive(store.planner.visibleCalendars);
   const firstFieldRef = useRef<InputRef>(null);
 
   const isOpen = !!data;

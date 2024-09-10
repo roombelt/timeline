@@ -25,7 +25,7 @@ type TableLabelProps = {
 export default function TableLabel({ openConfig, getCalendarApi }: TableLabelProps) {
   const [isLoading, setLoading] = useState(false);
   const store = useStore();
-  const time = useActive(store.planner.timeRange.get);
+  const time = useActive(store.planner.timeRange);
 
   const { ref } = useResizeDetector({
     handleHeight: false,

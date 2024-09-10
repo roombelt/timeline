@@ -25,9 +25,9 @@ export default function PlannerPage() {
   const [isConfigOpen, setConfigOpen] = useState(false);
   const fullCalendar = useRef<FullCalendar | null>(null);
 
-  const calendars = useActive(store.planner.visibleCalendars.get);
-  const events = useActive(store.planner.visibleEvents.get);
-  const resourceAreaWidth = useActive(store.planner.resourceAreaWidth.get);
+  const calendars = useActive(store.planner.visibleCalendars);
+  const events = useActive(store.planner.visibleEvents);
+  const resourceAreaWidth = useActive(store.planner.resourceAreaWidth);
 
   useEffect(() => store.showApp(100), [store]);
 

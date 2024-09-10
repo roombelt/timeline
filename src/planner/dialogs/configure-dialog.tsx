@@ -5,9 +5,9 @@ import { useStore } from "@/src/store";
 
 export default function ConfigureDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const store = useStore();
-  const user = useActive(store.user.get);
-  const userCalendars = useActive(store.userCalendars.get);
-  const visibleCalendars = useActive(store.planner.visibleCalendars.get);
+  const user = useActive(store.user);
+  const userCalendars = useActive(store.userCalendars);
+  const visibleCalendars = useActive(store.planner.visibleCalendars);
 
   const helpLink = user?.provider === "google" ? "https://go.roombelt.com/scMpEB" : "https://go.roombelt.com/x1hoy5";
 

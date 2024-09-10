@@ -9,7 +9,7 @@ import { useStore } from "@/src/store";
 export default function ViewMeetingDialog() {
   const app = App.useApp();
   const store = useStore();
-  const { event, calendar, isRemoving } = useActive(store.planner.viewMeetingDialog.get);
+  const { event, calendar, isRemoving } = useActive(store.planner.viewMeetingDialog);
 
   const footer = (
     <Space>
