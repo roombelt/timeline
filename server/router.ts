@@ -39,6 +39,9 @@ export const appRouter = router({
   getEvent: procedure
     .input(z.object({ calendarId: z.string(), eventId: z.string() }))
     .query(({ input, ctx }) => ctx.calendar.getEvent(input.calendarId, input.eventId)),
+  sendFeedback: procedure.input(z.object({ message: z.string() })).mutation(({ input, ctx }) => {
+    console.log(`[FEEDBACK] [${ctx.session?.user.email}]: ${input.message}`);
+  }),
 });
 
 export type AppRouter = typeof appRouter;

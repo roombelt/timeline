@@ -13,11 +13,6 @@ export default function AccountMenu() {
 
   const items: MenuProps["items"] = [
     {
-      key: "help",
-      onClick: () => alert("Help"),
-      label: "Help",
-    },
-    {
       key: "logout",
       onClick: () => signOut(),
       label: "Logout",
@@ -27,27 +22,18 @@ export default function AccountMenu() {
   if (status === "authenticated") {
     return (
       <Dropdown menu={{ items }} trigger={["click"]} placement="bottomLeft">
-        <AccountBox>
-          <AccountButton>
-            <Image width={32} height={32} src={session.user.image!} alt="User avatar" unoptimized />
-            {session.user.name}
-          </AccountButton>
-        </AccountBox>
+        <AccountButton>
+          <Image width={24} height={24} src={session.user.image!} alt="User avatar" unoptimized />
+          {session.user.name}
+        </AccountButton>
       </Dropdown>
     );
   }
 }
 
-const AccountBox = styled.div`
-  color: white;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-`;
-
 const AccountButton = styled.button`
-  padding: 0;
-  width: 100%;
+  color: white !important;
+  padding: 3px 10px;
   border: none;
   display: flex;
   background: transparent;
@@ -55,9 +41,10 @@ const AccountButton = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  border: none;
-  border-radius: 0;
+  border: 1px solid transparent;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s;
 
   img {
     border-radius: 100%;
@@ -65,7 +52,7 @@ const AccountButton = styled.button`
 
   &:hover,
   &:focus {
-    background: transparent;
-    backdrop-filter: brightness(80%);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #666;
   }
 `;

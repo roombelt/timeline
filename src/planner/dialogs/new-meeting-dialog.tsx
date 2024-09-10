@@ -2,7 +2,7 @@ import { Form, Typography, Modal, Input, TimePicker, App, Descriptions, InputRef
 import { useActive } from "active-store";
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
-import { useStore } from "@/pages/_store";
+import { useStore } from "@/src/store";
 
 export default function NewMeetingDialog() {
   const [isCreating, setCreating] = useState(false);

@@ -7,15 +7,25 @@ import activeWelcomeDialog from "./welcome-dialog";
 import activeCreateMeetingDialog from "./create-meeting-dialog";
 import activeViewMeetingDialog from "./view-meeting-dialog";
 
+const sampleData = {
+  calendars: [{ id: "1", name: "First calendar", color: "green" }],
+};
+
 export default function activePlannerState(api: ActiveApiQueries) {
-  const resourceAreaWidth = activeLocalStorage("resource-area-width", 300);
+  const resourceAreaWidth = activeLocalStorage(
+    activeComputed(() => `${api.user.get()?.id}.resource-area-width`),
+    300
+  );
 
   const timeRange = activeState({
     start: dayjs().startOf("day").valueOf(),
     end: dayjs().endOf("day").valueOf(),
   });
 
-  const visibleCalendarsIds = activeLocalStorage<string[]>("visible-calendars", []);
+  const visibleCalendarsIds = activeLocalStorage<string[]>(
+    activeComputed(() => `${api.user.get()?.id}.visible-calendars`),
+    []
+  );
   const visibleCalendars = activeComputed(() => {
     return visibleCalendarsIds.get().map((id) => {
       const calendar = api.userCalendars.get().find((item) => item.id === id);
@@ -67,7 +77,7 @@ export default function activePlannerState(api: ActiveApiQueries) {
     visibleEvents: { ...visibleEvents, refreshEvents: api.refreshEvents, removeEvent: api.removeEvent, isLoading },
     resourceAreaWidth,
     createMeetingDialog: activeCreateMeetingDialog(api.refreshEvents),
-    welcomeDialog: activeWelcomeDialog(visibleCalendarsIds),
+    welcomeDialog: activeWelcomeDialog(api, visibleCalendarsIds),
     viewMeetingDialog: activeViewMeetingDialog(api, visibleEvents),
   };
 }

@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { DeleteOutlined, LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 import type { ResourceLabelContentArg } from "@fullcalendar/resource";
-import { useStore } from "@/pages/_store";
+import { useStore } from "@/src/store";
 
 export default function RowLabel({ resource }: { resource: ResourceLabelContentArg["resource"] }) {
   const store = useStore();

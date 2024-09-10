@@ -1,7 +1,7 @@
 import { Button, Select, Modal, Typography } from "antd";
 import { useActive } from "active-store";
 import React from "react";
-import { useStore } from "@/pages/_store";
+import { useStore } from "@/src/store";
 
 export default function ConfigureDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const store = useStore();

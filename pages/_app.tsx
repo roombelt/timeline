@@ -2,15 +2,22 @@ import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { SessionProvider } from "next-auth/react";
 import "./styles.css";
+import Head from "next/head";
 
 // Dynamically import the Layout component with SSR disabled
-const ApplicationLayout = dynamic(() => import("@/pages/_layout/index"), {
+const ApplicationLayout = dynamic(() => import("@/src/layout/index"), {
   ssr: false,
 });
 
 export default function Application({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
+      <Head>
+        <title>Roombelt Timeline</title>
+        <meta name="description" content="Various utilities for calendar" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <FullPageLoader />
       <ApplicationLayout>
         <Component {...pageProps} />

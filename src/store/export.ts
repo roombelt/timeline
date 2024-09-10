@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import { activeState } from "active-store";
 import { ActiveApiQueries } from "./trpc";
-import { trpc } from "../api/trpc/_client";
+import { trpc } from "../../pages/api/trpc/_client";
 import type { Calendar, CalendarEvent } from "@/server/providers/types";
 import dayjs from "dayjs";
 

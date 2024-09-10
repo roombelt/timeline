@@ -1,12 +1,25 @@
-import { activeQuery } from "active-store";
+import { activeComputed, activeQuery } from "active-store";
 import { trpc } from "@/pages/api/trpc/_client";
 import ms from "ms";
 import { attachRefetchOnTabVisible } from "./utils";
+import { getSession } from "next-auth/react";
 
 export function activeApiQueries() {
+  const user = activeQuery<() => Promise<{ id: string; name: string; email: string; image: string } | null>>(() =>
+    getSession().then((data) => (data?.user as any) ?? null)
+  );
+
   const userCalendars = activeQuery(trpc.calendars.query);
   const calendarEvents = activeQuery(trpc.events.query);
   const singleEvent = activeQuery(trpc.getEvent.query);
+  const isAuthorized = activeQuery(
+    () =>
+      trpc.calendars.query().then(
+        () => true,
+        () => false
+      ),
+    { retryDelay: () => false }
+  );
 
   attachRefetchOnTabVisible(calendarEvents, ms("5s"));
 
@@ -23,6 +36,8 @@ export function activeApiQueries() {
   }
 
   return {
+    user,
+    isAuthorized,
     userCalendars,
     calendarEvents,
     singleEvent,

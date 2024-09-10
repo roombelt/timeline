@@ -1,16 +1,17 @@
-import styled, { createGlobalStyle } from "styled-components";
-import { App, Layout, ConfigProvider, Spin, Button } from "antd";
-import Head from "next/head";
+import styled from "styled-components";
+import { App, Layout, ConfigProvider, Spin, Button, Space } from "antd";
 import React, { Suspense, useEffect } from "react";
-import { ExportOutlined, ScheduleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { ErrorBoundary } from "react-error-boundary";
 
 import AccountMenu from "./account-menu";
-import { signIn } from "next-auth/react";
 import { useActive } from "active-store";
-import { useStore } from "../_store";
+import { useStore } from "../store";
+import LoginPage from "../login";
+import Feedback, { HeaderButton } from "./feedback";
+import Link from "next/link";
+import { GithubOutlined } from "@ant-design/icons";
 
 dayjs.extend(localizedFormat);
 
@@ -18,14 +19,14 @@ const { Content, Header } = Layout;
 
 export default function DefaultLayout({ children }: React.PropsWithChildren<{}>) {
   const store = useStore();
-  const hasAccess = useActive(store.hasAccessToCalendars.state);
+  const isAuthorized = useActive(store.isAuthorized.state);
 
-  if (hasAccess.status === "pending") {
+  if (isAuthorized.status === "pending") {
     return null;
   }
 
-  if (!hasAccess.data) {
-    return <SignIn />;
+  if (!isAuthorized.data) {
+    return <LoginPage />;
   }
 
   return (
@@ -40,13 +41,6 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
     >
       <App className="ant-app">
         <Layout id="main-layout">
-          <Head>
-            <title>Roombelt - Meeting Planner</title>
-            <meta name="description" content="Various utilities for calendar" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
-          <GlobalStyles />
           <Header
             style={{
               position: "sticky",
@@ -68,17 +62,19 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
                 fontSize: 16,
               }}
             >
-              Roombelt Meeting Planner
+              Roombelt Timeline
             </div>
-            {/* <Menu
-              theme="dark"
-              mode="horizontal"
-              selectedKeys={[router.pathname]}
-              items={items}
-              style={{ flex: 1, minWidth: 0 }}
-              onSelect={(item) => router.push(item.key)}
-            /> */}
-            <AccountMenu />
+            <Space>
+              <Link href="https://github.com/ziolko/timeline" target="_blank" rel="noopener">
+                <HeaderButton>
+                  <GithubOutlined />
+                </HeaderButton>
+              </Link>
+              <Suspense>
+                <Feedback />
+              </Suspense>
+              <AccountMenu />
+            </Space>
           </Header>
           <Content style={{ margin: 0, padding: 0, background: "white" }}>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
@@ -91,23 +87,9 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
   );
 }
 
-function SignIn() {
-  const store = useStore();
-  useEffect(store.showApp, []);
-
-  return (
-    <FullPageLoaderWrapper>
-      <div>Please sign in below.</div>
-      <Button type="primary" onClick={() => signIn("google")}>
-        Sign in with Google
-      </Button>
-    </FullPageLoaderWrapper>
-  );
-}
-
 function ErrorFallback({ error }: { error: any }) {
   const store = useStore();
-  useEffect(store.showApp, []);
+  useEffect(() => store.showApp(), [store]);
 
   return (
     <FullPageLoaderWrapper>
@@ -138,26 +120,4 @@ const FullPageLoaderWrapper = styled.div`
   gap: 20px;
   flex-direction: column;
   font-size: 18px;
-`;
-
-const items: { key: string; label: string; icon: React.ReactNode }[] = [
-  {
-    key: "/",
-    label: "Planner",
-    icon: <ScheduleOutlined />,
-  },
-  {
-    key: "/export",
-    label: "Export",
-    icon: <ExportOutlined />,
-  },
-];
-
-const GlobalStyles = createGlobalStyle`
-  body, html, #__next, #main-layout, .ant-app {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
 `;

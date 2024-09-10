@@ -1,25 +1,16 @@
 import { activeApiQueries } from "./trpc";
-import activeExportState from "./export";
 import activePlannerState from "./planner";
-import { activeQuery } from "active-store";
-import { trpc } from "../api/trpc/_client";
 import { createContext, useContext } from "react";
+import activeFeedbackState from "./feedback";
 
 function createAppStore() {
   const api = activeApiQueries();
-  const hasAccessToCalendars = activeQuery(
-    () =>
-      trpc.calendars.query().then(
-        () => true,
-        () => false
-      ),
-    { retryDelay: () => false }
-  );
 
   return {
     planner: activePlannerState(api),
-    export: activeExportState(api.userCalendars),
-    hasAccessToCalendars,
+    user: api.user,
+    feedback: activeFeedbackState(),
+    isAuthorized: api.isAuthorized,
 
     userCalendars: {
       ...api.userCalendars,

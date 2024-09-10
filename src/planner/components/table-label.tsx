@@ -14,7 +14,7 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import type { ColHeaderContentArg } from "@fullcalendar/resource";
-import { AppStore, useStore } from "@/pages/_store";
+import { AppStore, useStore } from "@/src/store";
 
 type TableLabelProps = {
   openConfig: () => void;

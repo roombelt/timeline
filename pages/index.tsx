@@ -1,1 +1,1 @@
-export { default } from "./planner";
+export { default } from "@/src/planner";

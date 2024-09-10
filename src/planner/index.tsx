@@ -9,18 +9,18 @@ import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import NewMeetingDialog from "./_dialogs/new-meeting-dialog";
-import ConfigureDialog from "./_dialogs/configure-dialog";
-import TableLabel, { TABLE_LABEL_ELEMENT_CLASS } from "./_components/table-label";
-import RowLabel from "./_components/row-label";
-import WelcomeDialog from "./_dialogs/welcome-dialog";
-import ViewMeetingDialog from "./_dialogs/view-meeting-dialog";
-import { useStore } from "../_store";
+import NewMeetingDialog from "./dialogs/new-meeting-dialog";
+import ConfigureDialog from "./dialogs/configure-dialog";
+import TableLabel, { TABLE_LABEL_ELEMENT_CLASS } from "./components/table-label";
+import RowLabel from "./components/row-label";
+import WelcomeDialog from "./dialogs/welcome-dialog";
+import ViewMeetingDialog from "./dialogs/view-meeting-dialog";
+import { useStore } from "../store";
 
 const toTimestamp = (time: number | { year: number; month: number; day: number }) =>
   typeof time === "number" ? time : `${time.year}-${time.day}-${time.month}`;
 
-export default function BookHelper() {
+export default function PlannerPage() {
   const store = useStore();
   const [isConfigOpen, setConfigOpen] = useState(false);
   const fullCalendar = useRef<FullCalendar | null>(null);
@@ -29,7 +29,7 @@ export default function BookHelper() {
   const events = useActive(store.planner.visibleEvents.get);
   const resourceAreaWidth = useActive(store.planner.resourceAreaWidth.get);
 
-  useEffect(() => store.showApp(100), []);
+  useEffect(() => store.showApp(100), [store]);
 
   const getCalendar = (calendarId: string) => calendars.find((c) => c.id === calendarId);
   const getCalendarApi = () => fullCalendar.current!.getApi();

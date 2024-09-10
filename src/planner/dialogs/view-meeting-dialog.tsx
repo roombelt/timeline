@@ -4,7 +4,7 @@ import React from "react";
 import dayjs from "dayjs";
 
 import { DeleteOutlined } from "@ant-design/icons";
-import { useStore } from "@/pages/_store";
+import { useStore } from "@/src/store";
 
 export default function ViewMeetingDialog() {
   const app = App.useApp();

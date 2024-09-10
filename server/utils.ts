@@ -6,12 +6,13 @@ import { getToken } from "next-auth/jwt";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import GoogleProvider from "./providers/google";
 import { CalendarProvider } from "./providers/types";
+import MicrosoftProvider from "./providers/microsoft";
 
 export default async function createContext(opts: CreateNextContextOptions) {
   const token = (await getToken({ req: opts.req })) as {
     accessToken: string;
     refreshToken: string;
-    provider: "google";
+    provider: "google" | "azure-ad";
   };
 
   const session = await getServerSession(opts.req, opts.res, authOptions);
@@ -21,7 +22,15 @@ export default async function createContext(opts: CreateNextContextOptions) {
       if (!token?.accessToken || !token?.refreshToken) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-      return new GoogleProvider(token.accessToken, token.refreshToken);
+
+      switch (token.provider) {
+        case "google":
+          return new GoogleProvider(token.accessToken, token.refreshToken);
+        case "azure-ad":
+          return new MicrosoftProvider(token.accessToken, token.refreshToken);
+        default:
+          throw new Error("Unknown calendar provider: " + token.provider);
+      }
     },
   };
 }

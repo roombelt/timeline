@@ -1,7 +1,7 @@
 import { Button, Select, Modal, Typography } from "antd";
 import { useActive } from "active-store";
 import React, { useEffect, useRef, useState } from "react";
-import { useStore } from "@/pages/_store";
+import { useStore } from "@/src/store";
 
 export default function WelcomeDialog() {
   const store = useStore();

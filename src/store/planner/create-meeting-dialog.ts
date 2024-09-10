@@ -1,6 +1,6 @@
 import { activeState } from "active-store";
 import dayjs from "dayjs";
-import { trpc } from "../../api/trpc/_client";
+import { trpc } from "../../../pages/api/trpc/_client";
 
 export default function activeCreateMeetingDialog(refresh: (calendarId: string) => Promise<any>) {
   const isSaving = activeState(false);
