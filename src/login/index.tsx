@@ -19,15 +19,15 @@ export default function LoginPage() {
         <LoginCardContent>
           <LoginTitle level={2}>Sign in</LoginTitle>
           <Typography.Text type="secondary">
-            Welcome to Roombelt Meeting Planner. <br />
+            Welcome to Roombelt Timeline. <br />
             Please sign in with your account below.
           </Typography.Text>
 
           <LoginButtons>
-            <Button onClick={() => signIn("google")}>
+            <Button size="large" onClick={() => signIn("google")}>
               <Image src={google} alt="" width={size} height={size} /> Continue with Google
             </Button>
-            <Button onClick={() => signIn("azure-ad")}>
+            <Button size="large" onClick={() => signIn("azure-ad")}>
               <Image src={microsoft} alt="" width={size} height={size} /> Continue with Microsoft
             </Button>
           </LoginButtons>

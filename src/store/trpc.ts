@@ -5,9 +5,8 @@ import { attachRefetchOnTabVisible } from "./utils";
 import { getSession } from "next-auth/react";
 
 export function activeApiQueries() {
-  const user = activeQuery<() => Promise<{ id: string; name: string; email: string; image: string } | null>>(() =>
-    getSession().then((data) => (data?.user as any) ?? null)
-  );
+  type User = { id: string; name: string; email: string; image: string; provider: "google" | "azure-ad" };
+  const user = activeQuery<() => Promise<User | null>>(() => getSession().then((data) => (data?.user as any) ?? null));
 
   const userCalendars = activeQuery(trpc.calendars.query);
   const calendarEvents = activeQuery(trpc.events.query);

@@ -13,26 +13,28 @@ export default function ViewMeetingDialog() {
 
   const footer = (
     <Space>
-      <Popconfirm
-        title="Delete this meeting"
-        description={
-          <>
-            Are you sure you want to delete this meeting? <br />
-            This operation cannot be reverted.
-          </>
-        }
-        open={isRemoving || undefined}
-        onConfirm={() => store.planner.viewMeetingDialog.remove().then(() => app.message.success("Meeting removed"))}
-        okText="Yes"
-        okButtonProps={{ disabled: isRemoving, loading: isRemoving }}
-        cancelButtonProps={{ disabled: isRemoving }}
-        cancelText="No"
-        placement="bottom"
-      >
-        <Button danger disabled={isRemoving}>
-          <DeleteOutlined />
-        </Button>
-      </Popconfirm>
+      {!calendar?.readonly && (
+        <Popconfirm
+          title="Delete this meeting"
+          description={
+            <>
+              Are you sure you want to delete this meeting? <br />
+              This operation cannot be reverted.
+            </>
+          }
+          open={isRemoving || undefined}
+          onConfirm={() => store.planner.viewMeetingDialog.remove().then(() => app.message.success("Meeting removed"))}
+          okText="Yes"
+          okButtonProps={{ disabled: isRemoving, loading: isRemoving }}
+          cancelButtonProps={{ disabled: isRemoving }}
+          cancelText="No"
+          placement="bottom"
+        >
+          <Button danger disabled={isRemoving}>
+            <DeleteOutlined />
+          </Button>
+        </Popconfirm>
+      )}
       <Button onClick={() => store.planner.viewMeetingDialog.close()} disabled={isRemoving} type="primary">
         Close
       </Button>

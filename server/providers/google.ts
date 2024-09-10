@@ -34,6 +34,7 @@ export default class GoogleProvider implements CalendarProvider {
       id: item.id!,
       name: item.summary!,
       color: item.backgroundColor ?? "",
+      readonly: item.accessRole !== "writer" && item.accessRole !== "owner",
     }));
   }
 

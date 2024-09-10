@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button, Popconfirm } from "antd";
+import { Button, Popconfirm, Tooltip } from "antd";
 import { useActive } from "active-store";
 import styled from "styled-components";
 
-import { DeleteOutlined, LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, LoadingOutlined, LockOutlined, ReloadOutlined } from "@ant-design/icons";
 import type { ResourceLabelContentArg } from "@fullcalendar/resource";
 import { useStore } from "@/src/store";
 
@@ -11,10 +11,19 @@ export default function RowLabel({ resource }: { resource: ResourceLabelContentA
   const store = useStore();
 
   const isLoading = useActive(() => store.planner.visibleEvents.isLoading.get(resource.id));
+  const calendar = useActive(() => store.planner.calendars.get(resource.id));
+
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   return (
     <RowLabelWrapper>
-      <span className="resource-label">{resource.title}</span>
+      <span className="resource-label">
+        {calendar?.readonly && (
+          <Tooltip placement="topRight" title="This calendar is read-only">
+            <LockOutlined style={{ color: "#aa0000", marginRight: 5 }} />
+          </Tooltip>
+        )}
+        {resource.title}
+      </span>
       <div className="resource-label-actions">
         <Popconfirm
           title="Delete the calendar"

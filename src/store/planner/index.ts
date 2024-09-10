@@ -3,13 +3,8 @@ import { activeComputed, activeState } from "active-store";
 import { ActiveApiQueries } from "../trpc";
 import { activeLocalStorage } from "../utils";
 import type { CalendarEvent } from "@/server/providers/types";
-import activeWelcomeDialog from "./welcome-dialog";
 import activeCreateMeetingDialog from "./create-meeting-dialog";
 import activeViewMeetingDialog from "./view-meeting-dialog";
-
-const sampleData = {
-  calendars: [{ id: "1", name: "First calendar", color: "green" }],
-};
 
 export default function activePlannerState(api: ActiveApiQueries) {
   const resourceAreaWidth = activeLocalStorage(
@@ -22,22 +17,30 @@ export default function activePlannerState(api: ActiveApiQueries) {
     end: dayjs().endOf("day").valueOf(),
   });
 
-  const visibleCalendarsIds = activeLocalStorage<string[]>(
+  const selectedCalendarsIds = activeLocalStorage<string[] | null>(
     activeComputed(() => `${api.user.get()?.id}.visible-calendars`),
-    []
+    null
   );
-  const visibleCalendars = activeComputed(() => {
-    return visibleCalendarsIds.get().map((id) => {
-      const calendar = api.userCalendars.get().find((item) => item.id === id);
-      return calendar ?? { id, name: id, color: "blue" };
+
+  const selectedCalendars = activeComputed(() => {
+    const calendars = api.userCalendars.get();
+    const calendarsIds = selectedCalendarsIds.get();
+
+    if (!calendarsIds) {
+      return calendars.filter((_, index) => index < 10);
+    }
+
+    return calendarsIds.map((id) => {
+      const calendar = calendars.find((item) => item.id === id);
+      return calendar ?? { id, name: id, readonly: true, color: "blue" };
     });
   });
 
   const visibleEvents = activeComputed(() => {
     const data: CalendarEvent[] = [];
-    for (const calendarId of visibleCalendarsIds.get()) {
+    for (const calendar of selectedCalendars.get()) {
       const state = api.calendarEvents.state({
-        calendarId,
+        calendarId: calendar.id,
         startTimestamp: timeRange.get().start,
         endTimestamp: timeRange.get().end,
       });
@@ -57,6 +60,10 @@ export default function activePlannerState(api: ActiveApiQueries) {
     return state.isFetching;
   });
 
+  const calendars = activeComputed((calendarId: string) =>
+    api.userCalendars.get().find((item) => item.id === calendarId)
+  );
+
   return {
     timeRange: {
       get: timeRange.get,
@@ -65,19 +72,21 @@ export default function activePlannerState(api: ActiveApiQueries) {
         api.refreshEvents();
       },
     },
+    calendars,
     visibleCalendars: {
-      ...visibleCalendars,
-      getIds: visibleCalendarsIds.get,
-      setIds: visibleCalendarsIds.set,
+      ...selectedCalendars,
+      setIds: selectedCalendarsIds.set,
       remove: (calendarId: string) => {
-        const value = visibleCalendarsIds.get().filter((item) => item !== calendarId);
-        visibleCalendarsIds.set(value);
+        const value = selectedCalendars
+          .get()
+          .map((item) => item.id)
+          .filter((item) => item !== calendarId);
+        selectedCalendarsIds.set(value);
       },
     },
     visibleEvents: { ...visibleEvents, refreshEvents: api.refreshEvents, removeEvent: api.removeEvent, isLoading },
     resourceAreaWidth,
     createMeetingDialog: activeCreateMeetingDialog(api.refreshEvents),
-    welcomeDialog: activeWelcomeDialog(api, visibleCalendarsIds),
     viewMeetingDialog: activeViewMeetingDialog(api, visibleEvents),
   };
 }

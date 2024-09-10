@@ -65,7 +65,7 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
               Roombelt Timeline
             </div>
             <Space>
-              <Link href="https://github.com/ziolko/timeline" target="_blank" rel="noopener">
+              <Link href="https://github.com/roombelt/timeline" target="_blank" rel="noopener">
                 <HeaderButton>
                   <GithubOutlined />
                 </HeaderButton>

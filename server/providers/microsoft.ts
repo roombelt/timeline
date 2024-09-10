@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { Calendar, CalendarEvent, CalendarProvider } from "./types";
 
 import { convertToText, getDisplayName } from "./utils";
+import { calendar } from "googleapis/build/src/apis/calendar";
 
 export default class MicrosoftProvider implements CalendarProvider {
   oauth2: AuthorizationCode;
@@ -27,11 +28,14 @@ export default class MicrosoftProvider implements CalendarProvider {
 
   async getCalendars(): Promise<Calendar[]> {
     const response = await this.client.api(`/me/calendars?top=100`).get();
-    return response.value.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      color: item.hexColor || autoColor(item.id),
-    }));
+    return response.value.map(
+      (item: any): Calendar => ({
+        id: item.id,
+        name: item.name,
+        color: item.hexColor || autoColor(item.id),
+        readonly: !item.canEdit,
+      })
+    );
   }
 
   async getEvents(calendarId: string, timeMin: number, timeMax: number) {

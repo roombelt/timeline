@@ -13,7 +13,6 @@ import NewMeetingDialog from "./dialogs/new-meeting-dialog";
 import ConfigureDialog from "./dialogs/configure-dialog";
 import TableLabel, { TABLE_LABEL_ELEMENT_CLASS } from "./components/table-label";
 import RowLabel from "./components/row-label";
-import WelcomeDialog from "./dialogs/welcome-dialog";
 import ViewMeetingDialog from "./dialogs/view-meeting-dialog";
 import { useStore } from "../store";
 
@@ -21,6 +20,7 @@ const toTimestamp = (time: number | { year: number; month: number; day: number }
   typeof time === "number" ? time : `${time.year}-${time.day}-${time.month}`;
 
 export default function PlannerPage() {
+  const app = App.useApp();
   const store = useStore();
   const [isConfigOpen, setConfigOpen] = useState(false);
   const fullCalendar = useRef<FullCalendar | null>(null);
@@ -39,7 +39,6 @@ export default function PlannerPage() {
       <ConfigureDialog open={isConfigOpen} onClose={() => setConfigOpen(false)} />
       <ViewMeetingDialog />
       <NewMeetingDialog />
-      <WelcomeDialog />
       <FullCalendar
         ref={fullCalendar}
         plugins={[interactionPlugin, resourceTimelinePlugin]}
@@ -76,14 +75,18 @@ export default function PlannerPage() {
           const [calendarId, eventId] = info.event.id.split("~~~");
           store.planner.viewMeetingDialog.open(calendarId, eventId);
         }}
-        select={(info) =>
-          store.planner.createMeetingDialog.open(
+        select={(info) => {
+          if (getCalendar(info.resource!.id)?.readonly) {
+            return app.message.error("You can't create meetings in this calendar because it's read-only.");
+          }
+
+          return store.planner.createMeetingDialog.open(
             info.resource!.id,
             info.start,
             info.end,
             `Meeting in ${calendars.find((item) => item.id === info.resource!.id)?.name}`
-          )
-        }
+          );
+        }}
       />
     </PlannerViewWrapper>
   );

@@ -5,8 +5,11 @@ import { useStore } from "@/src/store";
 
 export default function ConfigureDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const store = useStore();
+  const user = useActive(store.user.get);
   const userCalendars = useActive(store.userCalendars.get);
-  const visibleCalendarsIds = useActive(store.planner.visibleCalendars.getIds);
+  const visibleCalendars = useActive(store.planner.visibleCalendars.get);
+
+  const helpLink = user?.provider === "google" ? "https://go.roombelt.com/scMpEB" : "https://go.roombelt.com/x1hoy5";
 
   return (
     <Modal
@@ -21,7 +24,7 @@ export default function ConfigureDialog({ open, onClose }: { open: boolean; onCl
         mode="multiple"
         allowClear
         placeholder="Please select"
-        value={visibleCalendarsIds}
+        value={visibleCalendars.map((item) => item.id)}
         onChange={store.planner.visibleCalendars.setIds}
         options={userCalendars.map((item) => ({
           value: item.id,
@@ -31,7 +34,7 @@ export default function ConfigureDialog({ open, onClose }: { open: boolean; onCl
       />
       <Typography.Text type="secondary">
         Hint: If your calendar is missing on the list visit{" "}
-        <a href="https://go.roombelt.com/scMpEB" target="_blank" rel="noopener noreferer">
+        <a href={helpLink} target="_blank" rel="noopener noreferer">
           this documentation page
         </a>
         .

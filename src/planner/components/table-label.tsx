@@ -1,16 +1,16 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Button, DatePicker } from "antd";
 import { useActive } from "active-store";
 import { useResizeDetector } from "react-resize-detector";
 import dayjs from "dayjs";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import type { CalendarApi } from "@fullcalendar/core";
 
 import {
   CaretLeftOutlined,
   CaretRightOutlined,
   LoadingOutlined,
-  PlusOutlined,
+  EditOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
 import type { ColHeaderContentArg } from "@fullcalendar/resource";
@@ -45,6 +45,7 @@ export default function TableLabel({ openConfig, getCalendarApi }: TableLabelPro
 
   return (
     <TableLabelWrapper ref={ref}>
+      <GlobalStyle />
       <div style={{ display: "flex", alignItems: "center" }}>
         <Button size="small" type="text" onClick={() => getCalendarApi().prev()}>
           <CaretLeftOutlined />
@@ -61,7 +62,7 @@ export default function TableLabel({ openConfig, getCalendarApi }: TableLabelPro
       </div>
       <div>
         <Button size="small" type="text" onClick={openConfig}>
-          <PlusOutlined />
+          <EditOutlined />
         </Button>
         <Button size="small" type="text" onClick={refreshAllCalendars}>
           {isLoading ? <LoadingOutlined /> : <ReloadOutlined />}
@@ -87,4 +88,10 @@ const TableLabelWrapper = styled.div`
   align-items: center;
   text-align: left;
   grid-template-columns: 1fr auto;
+`;
+
+const GlobalStyle = createGlobalStyle`
+  .planner-resources-header {
+    background: #f0f0f0;
+  }
 `;
