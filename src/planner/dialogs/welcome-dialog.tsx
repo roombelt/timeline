@@ -24,7 +24,7 @@ export default function WelcomeDialog() {
         alt="Welcome banner"
         style={{ margin: "20px auto", display: "block" }}
       />
-      <p>This free tool that gives you an overview of your calendars and meeting rooms on a beautiful timeline view.</p>
+      <p>This free tool gives you an overview of your meetings across all calendars on a beautiful timeline view.</p>
       <p>
         Please use the <em>Feedback</em> button in the upper right to contact the author of the app.
       </p>
