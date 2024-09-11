@@ -1,4 +1,4 @@
-<img src="public/screenshot.png" width="600">
+<img src="public/screenshot.png">
 
 This is the source code of the free app presenting events from multiple calendars in Google Calendar and Microsoft 365 on a convenient timeline view.
 
