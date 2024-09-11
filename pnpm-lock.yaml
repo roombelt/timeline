@@ -54,8 +54,8 @@ importers:
         specifier: ^5.0.7
         version: 5.0.7
       active-store:
-        specifier: ^0.1.16
-        version: 0.1.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.1.17
+        version: 0.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       antd:
         specifier: ^5.20.3
         version: 5.20.3(date-fns@3.6.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -590,8 +590,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  active-store@0.1.16:
-    resolution: {integrity: sha512-gI9DRgQpNyWlpDG0Wb40wauICIbUlG70A5o/6uUKdDhjwA1/QWulbRFW03gUme+WpLqpBcpeIrsJY9bsZD2mAQ==}
+  active-store@0.1.17:
+    resolution: {integrity: sha512-RtmoSPT0dP5WaappPEuk0wPZXaExjoo1lBdQtoSlA6eH3CR7I89lXkIXzGEHpAkCQyaXrnMb0mhkS6JoOqpqcQ==}
     peerDependencies:
       react: ^18.3.1
       react-dom: ^18.3.1
@@ -2855,7 +2855,7 @@ snapshots:
 
   acorn@8.12.1: {}
 
-  active-store@0.1.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  active-store@0.1.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

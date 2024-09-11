@@ -25,7 +25,7 @@
     "@types/html-to-text": "^9.0.4",
     "@types/lodash": "^4.17.7",
     "@types/simple-oauth2": "^5.0.7",
-    "active-store": "^0.1.16",
+    "active-store": "^0.1.17",
     "antd": "^5.20.3",
     "dayjs": "^1.11.13",
     "email-to-name": "^2.0.6",

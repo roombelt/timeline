@@ -58,15 +58,6 @@ export default function activePlannerState(api: ActiveApiQueries) {
     return data;
   });
 
-  const isLoading = activeComputed((calendarId: string) => {
-    const state = api.calendarEvents.state({
-      calendarId,
-      startTimestamp: timeRange.get().start,
-      endTimestamp: timeRange.get().end,
-    });
-    return state.isFetching;
-  });
-
   const loadingStatus = activeComputed((calendarId: string) => {
     const state = api.calendarEvents.state({
       calendarId,
@@ -115,7 +106,6 @@ export default function activePlannerState(api: ActiveApiQueries) {
       ...visibleEvents,
       refreshEvents: api.refreshEvents,
       removeEvent: api.removeEvent,
-      isLoading,
       loadingStatus,
     },
     resourceAreaWidth,

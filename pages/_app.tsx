@@ -16,7 +16,7 @@ export default function Application({ Component, pageProps: { session, ...pagePr
         <title>Roombelt Timeline</title>
         <meta name="description" content="Various utilities for calendar" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <FullPageLoader />
       <ApplicationLayout>
