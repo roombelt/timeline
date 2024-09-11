@@ -52,7 +52,7 @@ function FeedbackForm() {
           value={content}
           onChange={(e) => store.feedback.content.set(e.target.value)}
         />
-        <Input disabled value={user?.email} />
+        <Input readOnly value={user?.email} />
         <Button type="primary" disabled={!content?.trim()} onClick={store.feedback.send} loading={status === "sending"}>
           Send
         </Button>
