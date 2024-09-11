@@ -52,7 +52,8 @@ export default function LoginPage() {
           </LoginButtons>
 
           <Typography.Text type="secondary">
-            <a href="example.com">Terms of Service</a> | <a href="example.com">Privacy Policy</a>
+            <a href="https://roombelt.com/terms-and-conditions">Terms of Service</a> |{" "}
+            <a href="https://roombelt.com/privacy-policy">Privacy Policy</a>
           </Typography.Text>
         </LoginCardContent>
       </Card>

@@ -23,7 +23,7 @@ export default function NewMeetingDialog() {
       app.message.success("Meeting created");
     } catch (error) {
       setCreating(false);
-      app.message.error("Error while creating meeting");
+      app.message.error("Error while creating meeting. Please try again.");
     }
   }
 

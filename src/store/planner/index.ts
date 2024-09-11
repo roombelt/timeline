@@ -51,7 +51,7 @@ export default function activePlannerState(api: ActiveApiQueries) {
         startTimestamp: timeRange.get().start,
         endTimestamp: timeRange.get().end,
       });
-      if (state.isSuccess) {
+      if (state.data) {
         data.push(...state.data!);
       }
     }
@@ -65,6 +65,17 @@ export default function activePlannerState(api: ActiveApiQueries) {
       endTimestamp: timeRange.get().end,
     });
     return state.isFetching;
+  });
+
+  const loadingStatus = activeComputed((calendarId: string) => {
+    const state = api.calendarEvents.state({
+      calendarId,
+      startTimestamp: timeRange.get().start,
+      endTimestamp: timeRange.get().end,
+    });
+
+    if (state.isFetching || state.status === "pending") return "fetching";
+    else return state.status;
   });
 
   const calendars = activeComputed((calendarId: string) =>
@@ -100,7 +111,13 @@ export default function activePlannerState(api: ActiveApiQueries) {
         selectedCalendarsIds.set(value);
       },
     },
-    visibleEvents: { ...visibleEvents, refreshEvents: api.refreshEvents, removeEvent: api.removeEvent, isLoading },
+    visibleEvents: {
+      ...visibleEvents,
+      refreshEvents: api.refreshEvents,
+      removeEvent: api.removeEvent,
+      isLoading,
+      loadingStatus,
+    },
     resourceAreaWidth,
     createMeetingDialog: activeCreateMeetingDialog(api.refreshEvents),
     viewMeetingDialog: activeViewMeetingDialog(api, visibleEvents),

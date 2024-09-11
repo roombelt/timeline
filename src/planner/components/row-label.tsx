@@ -10,19 +10,17 @@ import { useStore } from "@/src/store";
 export default function RowLabel({ resource }: { resource: ResourceLabelContentArg["resource"] }) {
   const store = useStore();
 
-  const isLoading = useActive(() => store.planner.visibleEvents.isLoading.get(resource.id));
+  const status = useActive(() => store.planner.visibleEvents.loadingStatus.get(resource.id));
   const calendar = useActive(() => store.planner.calendars.get(resource.id));
 
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   return (
     <RowLabelWrapper>
       <span className="resource-label">
-        {calendar?.readonly && (
-          <Tooltip placement="topRight" title="This calendar is read-only">
-            <LockOutlined style={{ color: "#aa0000", marginRight: 5 }} />
-          </Tooltip>
-        )}
-        {resource.title}
+        <Tooltip title={`${resource.title}${calendar?.readonly ? " (this calendar is read-only)" : ""}`}>
+          {calendar?.readonly && <LockOutlined style={{ color: "#aa0000", marginRight: 5 }} />}
+          {resource.title}
+        </Tooltip>
       </span>
       <div className="resource-label-actions">
         <Popconfirm
@@ -38,14 +36,21 @@ export default function RowLabel({ resource }: { resource: ResourceLabelContentA
             <DeleteOutlined />
           </Button>
         </Popconfirm>
-        <Button
-          size="small"
-          type="text"
-          className={isConfirmOpen || isLoading ? "force-visible" : ""}
-          onClick={() => !isLoading && store.planner.visibleEvents.refreshEvents(resource.id)}
+        <Tooltip
+          placement="right"
+          title={status === "error" ? "Unable to load events for this calendar. Please try again." : null}
         >
-          {isLoading ? <LoadingOutlined /> : <ReloadOutlined />}
-        </Button>
+          <Button
+            size="small"
+            type="text"
+            className={isConfirmOpen || status !== "success" ? "force-visible" : ""}
+            onClick={() => status !== "fetching" && store.planner.visibleEvents.refreshEvents(resource.id)}
+          >
+            {status === "fetching" && <LoadingOutlined />}
+            {status === "success" && <ReloadOutlined />}
+            {status === "error" && <ReloadOutlined style={{ color: "#ee0000" }} />}
+          </Button>
+        </Tooltip>
       </div>
     </RowLabelWrapper>
   );
