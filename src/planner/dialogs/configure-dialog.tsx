@@ -3,9 +3,10 @@ import { useActive } from "active-store";
 import React from "react";
 import { useStore } from "@/src/store";
 
-export default function ConfigureDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function ConfigureDialog() {
   const store = useStore();
   const user = useActive(store.user);
+  const isOpen = useActive(store.planner.configDialog.isOpen);
   const userCalendars = useActive(store.userCalendars);
   const visibleCalendars = useActive(store.planner.visibleCalendars);
 
@@ -14,9 +15,9 @@ export default function ConfigureDialog({ open, onClose }: { open: boolean; onCl
   return (
     <Modal
       title="Edit visible calendars"
-      open={open}
-      onCancel={onClose}
-      footer={<Button type="primary" onClick={onClose} children="OK" />}
+      open={isOpen}
+      onCancel={store.planner.configDialog.close}
+      footer={<Button type="primary" onClick={store.planner.configDialog.close} children="OK" />}
     >
       <p> Please select calendars you'd like to see on the timeline:</p>
       <Select

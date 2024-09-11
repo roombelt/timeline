@@ -14,6 +14,7 @@ import ConfigureDialog from "./dialogs/configure-dialog";
 import TableLabel, { TABLE_LABEL_ELEMENT_CLASS } from "./components/table-label";
 import RowLabel from "./components/row-label";
 import ViewMeetingDialog from "./dialogs/view-meeting-dialog";
+import WelcomeDialog from "./dialogs/welcome-dialog";
 import { useStore } from "../store";
 
 const toTimestamp = (time: number | { year: number; month: number; day: number }) =>
@@ -22,7 +23,6 @@ const toTimestamp = (time: number | { year: number; month: number; day: number }
 export default function PlannerPage() {
   const app = App.useApp();
   const store = useStore();
-  const [isConfigOpen, setConfigOpen] = useState(false);
   const fullCalendar = useRef<FullCalendar | null>(null);
 
   const calendars = useActive(store.planner.visibleCalendars);
@@ -32,11 +32,12 @@ export default function PlannerPage() {
   useEffect(() => store.showApp(100), [store]);
 
   const getCalendar = (calendarId: string) => calendars.find((c) => c.id === calendarId);
-  const getCalendarApi = () => fullCalendar.current!.getApi();
+  const getFullCalendarApi = () => fullCalendar.current!.getApi();
 
   return (
     <PlannerViewWrapper>
-      <ConfigureDialog open={isConfigOpen} onClose={() => setConfigOpen(false)} />
+      <WelcomeDialog />
+      <ConfigureDialog />
       <ViewMeetingDialog />
       <NewMeetingDialog />
       <FullCalendar
@@ -63,9 +64,7 @@ export default function PlannerPage() {
           title: item.name,
         }))}
         resourceLabelContent={({ resource }) => <RowLabel resource={resource} />}
-        resourceAreaHeaderContent={({ view }) => (
-          <TableLabel view={view} getCalendarApi={getCalendarApi} openConfig={() => setConfigOpen(true)} />
-        )}
+        resourceAreaHeaderContent={({ view }) => <TableLabel view={view} getFullCalendarApi={getFullCalendarApi} />}
         resourceAreaWidth={resourceAreaWidth}
         resourceAreaHeaderClassNames={TABLE_LABEL_ELEMENT_CLASS}
         selectable

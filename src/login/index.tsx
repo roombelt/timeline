@@ -1,16 +1,19 @@
-import { Button, Card, Typography } from "antd";
+import { Alert, Button, Card, Typography } from "antd";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useStore } from "../store";
 
 import google from "./logo-google.svg";
 import microsoft from "./logo-microsoft.svg";
+import { useActive } from "active-store";
 
 export default function LoginPage() {
   const store = useStore();
   useEffect(() => store.showApp(), [store]);
+
+  const user = useActive(store.user.state);
   const size = 18;
 
   return (
@@ -18,10 +21,26 @@ export default function LoginPage() {
       <Card>
         <LoginCardContent>
           <LoginTitle level={2}>Sign in</LoginTitle>
-          <Typography.Text type="secondary">
-            Welcome to Roombelt Timeline. <br />
-            Please sign in with your account below.
-          </Typography.Text>
+
+          {!user.data?.provider && (
+            <Typography.Text type="secondary">
+              Welcome to Roombelt Timeline. <br />
+              Please sign in with your account below.
+            </Typography.Text>
+          )}
+
+          {user.data?.provider === "azure-ad" && (
+            <LoginError>
+              We can't access your calendar data. Please ensure that you use a school or work Microsoft 365 account with
+              license for Exchange Online (Outlook).
+            </LoginError>
+          )}
+
+          {user.data?.provider === "google" && (
+            <LoginError>
+              We can't access your calendar data. Please try again and grant all the requested permissions.
+            </LoginError>
+          )}
 
           <LoginButtons>
             <Button size="large" onClick={() => signIn("google")}>
@@ -39,6 +58,10 @@ export default function LoginPage() {
       </Card>
     </LoginPageWrapper>
   );
+}
+
+function LoginError({ children }: React.PropsWithChildren<{}>) {
+  return <Alert message={children} type="error" />;
 }
 
 const LoginPageWrapper = styled.div`

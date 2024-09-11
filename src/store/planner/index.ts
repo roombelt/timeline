@@ -7,10 +7,17 @@ import activeCreateMeetingDialog from "./create-meeting-dialog";
 import activeViewMeetingDialog from "./view-meeting-dialog";
 
 export default function activePlannerState(api: ActiveApiQueries) {
+  const welcomeDialogVisible = activeLocalStorage(
+    activeComputed(() => `${api.user.get()?.id}.welcome-dialog`),
+    true
+  );
+
   const resourceAreaWidth = activeLocalStorage(
     activeComputed(() => `${api.user.get()?.id}.resource-area-width`),
     300
   );
+
+  const configDialogVisible = activeState(false);
 
   const timeRange = activeState({
     start: dayjs().startOf("day").valueOf(),
@@ -65,6 +72,15 @@ export default function activePlannerState(api: ActiveApiQueries) {
   );
 
   return {
+    welcomeDialog: {
+      isVisible: welcomeDialogVisible.get,
+      hide: () => welcomeDialogVisible.set(false),
+    },
+    configDialog: {
+      isOpen: configDialogVisible.get,
+      open: () => configDialogVisible.set(true),
+      close: () => configDialogVisible.set(false),
+    },
     timeRange: {
       get: timeRange.get,
       set(start: number, end: number) {

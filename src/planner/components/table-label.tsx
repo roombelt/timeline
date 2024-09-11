@@ -17,12 +17,11 @@ import type { ColHeaderContentArg } from "@fullcalendar/resource";
 import { AppStore, useStore } from "@/src/store";
 
 type TableLabelProps = {
-  openConfig: () => void;
   view: ColHeaderContentArg["view"];
-  getCalendarApi: () => CalendarApi;
+  getFullCalendarApi: () => CalendarApi;
 };
 
-export default function TableLabel({ openConfig, getCalendarApi }: TableLabelProps) {
+export default function TableLabel({ getFullCalendarApi }: TableLabelProps) {
   const [isLoading, setLoading] = useState(false);
   const store = useStore();
   const time = useActive(store.planner.timeRange);
@@ -47,21 +46,21 @@ export default function TableLabel({ openConfig, getCalendarApi }: TableLabelPro
     <TableLabelWrapper ref={ref}>
       <GlobalStyle />
       <div style={{ display: "flex", alignItems: "center" }}>
-        <Button size="small" type="text" onClick={() => getCalendarApi().prev()}>
+        <Button size="small" type="text" onClick={() => getFullCalendarApi().prev()}>
           <CaretLeftOutlined />
         </Button>
         <DatePicker
           value={dayjs(time.start)}
           allowClear={false}
           suffixIcon={null}
-          onChange={(value) => getCalendarApi().gotoDate(value.valueOf())}
+          onChange={(value) => getFullCalendarApi().gotoDate(value.valueOf())}
         />
-        <Button size="small" type="text" onClick={() => getCalendarApi().next()}>
+        <Button size="small" type="text" onClick={() => getFullCalendarApi().next()}>
           <CaretRightOutlined />
         </Button>
       </div>
       <div>
-        <Button size="small" type="text" onClick={openConfig}>
+        <Button size="small" type="text" onClick={store.planner.configDialog.open}>
           <EditOutlined />
         </Button>
         <Button size="small" type="text" onClick={refreshAllCalendars}>
