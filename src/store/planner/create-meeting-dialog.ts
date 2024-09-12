@@ -24,7 +24,7 @@ export default function activeCreateMeetingDialog(refresh: (calendarId: string) 
     },
     close: () => state.set(null),
     data: { get: state.get },
-    isSaving,
+    isSaving: { get: isSaving.get },
     setSummary: (summary: string) => state.set({ ...state.get()!, summary }),
     setDescription: (description: string) => state.set({ ...state.get()!, description }),
     async save() {
@@ -32,9 +32,16 @@ export default function activeCreateMeetingDialog(refresh: (calendarId: string) 
       if (!value) {
         return;
       }
-      await trpc.createEvent.mutate(value);
-      await refresh(value.calendarId);
-      state.set(null);
+      try {
+        isSaving.set(true);
+        await trpc.createEvent.mutate(value);
+        await refresh(value.calendarId);
+        isSaving.set(false);
+        state.set(null);
+      } catch (error) {
+        isSaving.set(false);
+        throw error;
+      }
     },
   };
 }

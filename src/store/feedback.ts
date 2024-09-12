@@ -19,7 +19,7 @@ export default function activeFeedbackState() {
       try {
         status.set("sending");
         await Promise.all([
-          await trpc.sendFeedback.mutate({ message: content.get() }),
+          trpc.sendFeedback.mutate({ message: content.get() }),
           new Promise((resolve) => setTimeout(resolve, 2000)),
         ]);
         status.set("success");

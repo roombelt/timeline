@@ -1,14 +1,14 @@
-import { Form, Typography, Modal, Input, TimePicker, App, Descriptions, InputRef } from "antd";
+import { Form, Typography, Modal, Input, App, Descriptions, InputRef } from "antd";
 import { useActive } from "active-store";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import { useStore } from "@/src/store";
 
 export default function NewMeetingDialog() {
   const app = App.useApp();
-  const [isCreating, setCreating] = useState(false);
   const store = useStore();
   const data = useActive(store.planner.createMeetingDialog.data);
+  const isSaving = useActive(store.planner.createMeetingDialog.isSaving);
   const calendars = useActive(store.planner.visibleCalendars);
   const firstFieldRef = useRef<InputRef>(null);
 
@@ -17,12 +17,9 @@ export default function NewMeetingDialog() {
 
   async function create() {
     try {
-      setCreating(true);
       await store.planner.createMeetingDialog.save();
-      setCreating(false);
       app.message.success("Meeting created");
     } catch (error) {
-      setCreating(false);
       app.message.error("Error while creating meeting. Please try again.");
     }
   }
@@ -43,7 +40,8 @@ export default function NewMeetingDialog() {
       open={isOpen}
       closable={false}
       maskClosable={false}
-      okButtonProps={{ loading: isCreating, disabled: !isFormValid }}
+      okButtonProps={{ loading: isSaving, disabled: !isFormValid }}
+      cancelButtonProps={{ disabled: isSaving }}
       onOk={create}
       onCancel={store.planner.createMeetingDialog.close}
     >
