@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import { App, Layout, ConfigProvider, Spin, Button, Space } from "antd";
-import React, { Suspense, useEffect } from "react";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { ErrorBoundary } from "react-error-boundary";
 
 import AccountMenu from "./account-menu";
-import { useActive } from "active-store";
+import { ActiveBoundary, useActive } from "active-store";
 import { useStore } from "../store";
 import LoginPage from "../login";
 import Feedback, { HeaderButton } from "./feedback";
@@ -70,16 +69,14 @@ export default function DefaultLayout({ children }: React.PropsWithChildren<{}>)
                   <GithubOutlined />
                 </HeaderButton>
               </Link>
-              <Suspense>
+              <ActiveBoundary fallback={null}>
                 <Feedback />
-              </Suspense>
+              </ActiveBoundary>
               <AccountMenu />
             </Space>
           </Header>
           <Content style={{ margin: 0, padding: 0, background: "white" }}>
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-              <Suspense fallback={<FullPageLoader />} children={children} />
-            </ErrorBoundary>
+            <ActiveBoundary fallback={FullPageLoader} errorFallback={ErrorFallback} children={children} />
           </Content>
         </Layout>
       </App>
