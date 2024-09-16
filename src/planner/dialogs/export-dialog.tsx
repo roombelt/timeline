@@ -20,7 +20,7 @@ export default function ExportDialog() {
   }
   return (
     <Modal
-      title="Export events data to Excel"
+      title="Export events to Excel"
       closable={false}
       open={isVisible}
       footer={

@@ -18,7 +18,7 @@ export default function AccountMenu() {
     {
       key: "export",
       onClick: store.export.show,
-      label: "Export data",
+      label: "Export",
     },
     {
       key: "logout",
