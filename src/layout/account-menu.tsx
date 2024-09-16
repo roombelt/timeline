@@ -3,6 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import type { MenuProps } from "antd";
+import placeholder from "./avatar-placeholder.jpg";
 
 export default function AccountMenu() {
   const { data: session, status } = useSession();
@@ -20,10 +21,11 @@ export default function AccountMenu() {
   ];
 
   if (status === "authenticated") {
+    const userImage = session.user?.image ?? placeholder;
     return (
       <Dropdown menu={{ items }} trigger={["click"]} placement="bottomLeft">
         <AccountButton>
-          <Image width={24} height={24} src={session.user.image!} alt="User avatar" unoptimized />
+          <Image width={24} height={24} src={userImage} alt="User avatar" unoptimized />
           {session.user.name}
         </AccountButton>
       </Dropdown>
