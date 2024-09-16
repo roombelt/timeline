@@ -16,6 +16,7 @@ import RowLabel from "./components/row-label";
 import ViewMeetingDialog from "./dialogs/view-meeting-dialog";
 import WelcomeDialog from "./dialogs/welcome-dialog";
 import { useStore } from "../store";
+import ExportDialog from "./dialogs/export-dialog";
 
 const toTimestamp = (time: number | { year: number; month: number; day: number }) =>
   typeof time === "number" ? time : `${time.year}-${time.day}-${time.month}`;
@@ -40,6 +41,7 @@ export default function PlannerPage() {
       <ConfigureDialog />
       <ViewMeetingDialog />
       <NewMeetingDialog />
+      <ExportDialog />
       <FullCalendar
         ref={fullCalendar}
         plugins={[interactionPlugin, resourceTimelinePlugin]}

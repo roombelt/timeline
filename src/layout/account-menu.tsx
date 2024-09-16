@@ -4,8 +4,10 @@ import Image from "next/image";
 import styled from "styled-components";
 import type { MenuProps } from "antd";
 import placeholder from "./avatar-placeholder.jpg";
+import { useStore } from "../store";
 
 export default function AccountMenu() {
+  const store = useStore();
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -13,6 +15,11 @@ export default function AccountMenu() {
   }
 
   const items: MenuProps["items"] = [
+    {
+      key: "export",
+      onClick: store.export.show,
+      label: "Export data",
+    },
     {
       key: "logout",
       onClick: () => signOut(),
